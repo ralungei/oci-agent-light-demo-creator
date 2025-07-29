@@ -1,0 +1,572 @@
+"use client";
+
+import { Close as CloseIcon, KeyboardReturn } from "@mui/icons-material";
+import {
+  Box,
+  Collapse,
+  IconButton,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import JsonView from "@uiw/react-json-view";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import BlinkingEye from "./components/BlinkingEye";
+import DustText from "./components/DustText";
+import DynamicChip from "./components/DynamicChip";
+import TypingEffect from "./components/TypingEffect";
+import createGenaiAgentService from "./services/genaiAgentService";
+import { getMockFlow } from "./services/mockService";
+import { getErrorMessage } from "./utils/errorMessages";
+
+// Constants
+const TYPING_SPEED = 5;
+const MESSAGE_INTERVAL = 1700;
+const COLLAPSE_DELAY = 300;
+
+// Common styles
+const fontSizes = { xs: "1.5rem", sm: "1.8rem", md: "2rem" };
+const contentFontSizes = { xs: "1.2rem", sm: "1.4rem", md: "1.6rem" };
+
+const commonTextStyles = {
+  fontSize: fontSizes,
+  fontWeight: 300,
+  textAlign: "left",
+  lineHeight: 1.4,
+  margin: 0,
+};
+
+export default function Home() {
+  const [inputValue, setInputValue] = useState("");
+  const [submittedMessage, setSubmittedMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [agentStates, setAgentStates] = useState([]);
+  const [genaiService, setGenaiService] = useState(null);
+
+  // New state for chip system
+  const [activeChips, setActiveChips] = useState({});
+  const [displayChips, setDisplayChips] = useState({});
+  const [groupedElements, setGroupedElements] = useState([]);
+  const [, setProcessedMessages] = useState([]);
+  const [showTextField, setShowTextField] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
+  const [lookDirection, setLookDirection] = useState("center");
+  const [typingTimer, setTypingTimer] = useState(null);
+
+  useEffect(() => {
+    setGenaiService(createGenaiAgentService());
+    // Show text field after welcome animation completes
+    const timer = setTimeout(() => {
+      setShowTextField(true);
+    }, 600); // Hey (200ms) + delay (200ms) + Welcome back! (200ms)
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Group messages into chip rows and text blocks
+  const groupMessages = (messages) => {
+    const groups = [];
+    let currentChipGroup = [];
+
+    messages.forEach((message, index) => {
+      if (message.type === "chip") {
+        currentChipGroup.push({ ...message.chipData, messageIndex: index });
+      } else if (message.type === "text") {
+        // If we have accumulated chips, add them as a group first
+        if (currentChipGroup.length > 0) {
+          groups.push({ type: "chipRow", chips: currentChipGroup });
+          currentChipGroup = [];
+        }
+        // Add the text message
+        groups.push({
+          type: "text",
+          content: message.content,
+          messageIndex: index,
+        });
+      }
+    });
+
+    // Add any remaining chips
+    if (currentChipGroup.length > 0) {
+      groups.push({ type: "chipRow", chips: currentChipGroup });
+    }
+
+    return groups;
+  };
+
+  const startSimulation = (userInput) => {
+    // Get the appropriate mock flow based on user input
+    const mockFlow = getMockFlow(userInput || "");
+
+    setProcessedMessages([]);
+    setGroupedElements([]);
+    setActiveChips({});
+    setDisplayChips({});
+    setShowProgress(true);
+
+    let messageIndex = 0;
+
+    const processNextMessage = () => {
+      if (messageIndex < mockFlow.messages.length) {
+        const message = mockFlow.messages[messageIndex];
+        setProcessedMessages((prev) => {
+          const newMessages = [...prev, message];
+          setGroupedElements(groupMessages(newMessages));
+          return newMessages;
+        });
+
+        messageIndex++;
+
+        // Use different delay for subsequent messages
+        if (messageIndex < mockFlow.messages.length) {
+          setTimeout(processNextMessage, MESSAGE_INTERVAL);
+        } else {
+          // Hide progress after a delay when all messages are processed
+          setTimeout(() => {
+            setShowProgress(false);
+          }, 2000);
+        }
+      }
+    };
+
+    // Start with first message after 1 second
+    setTimeout(processNextMessage, 500);
+  };
+
+  // Handle chip changes per group
+  const handleChipChange = (chip, groupIndex) => {
+    if (chip) {
+      setDisplayChips((prev) => ({ ...prev, [groupIndex]: chip }));
+      setActiveChips((prev) => ({ ...prev, [groupIndex]: chip }));
+    } else {
+      setActiveChips((prev) => ({ ...prev, [groupIndex]: null }));
+      // Delay clearing display content until collapse finishes
+      setTimeout(() => {
+        setDisplayChips((prev) => ({ ...prev, [groupIndex]: null }));
+      }, COLLAPSE_DELAY);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (inputValue.trim() && genaiService) {
+      setSubmittedMessage(inputValue);
+      setInputValue("");
+      setAgentStates([{ trace: "connecting" }]);
+      setIsLoading(true);
+
+      // Start the chip simulation when submitting
+      startSimulation(inputValue);
+
+      try {
+        await genaiService.sendMessage(
+          inputValue,
+          (chunk) => {
+            // Add text chunks as they arrive
+            setAgentStates((prev) => {
+              // Remove connecting state if it's the only one
+              const filtered =
+                prev.length === 1 && prev[0].trace === "connecting" ? [] : prev;
+              return [...filtered, { type: "text", content: chunk }];
+            });
+          },
+          (eventData) => {
+            // Add any event data to the states list
+            setAgentStates((prev) => {
+              // Remove connecting state if it's the only one
+              const filtered =
+                prev.length === 1 && prev[0].trace === "connecting" ? [] : prev;
+              return [...filtered, eventData];
+            });
+          }
+        );
+      } catch (error) {
+        console.error("Error calling agent:", error);
+        const errorMessage = getErrorMessage(error);
+        setAgentStates((prev) => [
+          ...prev,
+          { type: "error", content: errorMessage },
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+  return (
+    <Box
+      sx={{
+        height: "100vh",
+        width: "100%",
+        backgroundImage: "url('/backgrounds/white-red-background.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+      }}
+    >
+      {/* Contenedor principal con flexbox */}
+      <Box
+        sx={{
+          display: "flex",
+          gap: 4,
+          width: "100%",
+          maxWidth: "1400px",
+        }}
+      >
+        {/* Columna izquierda */}
+        <Box sx={{ flex: "0 0 30%", paddingTop: "15vh", paddingLeft: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              mb: 2,
+              height: "40px",
+              alignItems: "center",
+            }}
+          >
+            <BlinkingEye isActive={showProgress} lookDirection={lookDirection} />
+          </Box>
+          <Box sx={{ minHeight: "100px" }}>
+            <TypingEffect text="Hey," speed={50}>
+              {(displayedText) => (
+                <Typography
+                  variant="h3"
+                  sx={{ ...commonTextStyles, minHeight: "40px" }}
+                >
+                  {displayedText}
+                </Typography>
+              )}
+            </TypingEffect>
+            <TypingEffect text="Welcome back!" speed={50} delay={200}>
+              {(displayedText) => (
+                <Typography
+                  variant="h3"
+                  sx={{
+                    ...commonTextStyles,
+                    minHeight: "40px",
+                    background:
+                      "linear-gradient(180deg,rgba(0, 0, 0, 0.35) 0%,rgb(0, 0, 0) 80%,rgb(0, 0, 0) 100%)",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  {displayedText}
+                </Typography>
+              )}
+            </TypingEffect>
+          </Box>
+
+          <AnimatePresence>
+            {showTextField && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  ease: [0.25, 0.46, 0.45, 0.94], // Apple's signature cubic-bezier
+                }}
+              >
+                <Box
+                  sx={{
+                    mt: 1,
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 2,
+                  }}
+                >
+                  <TextField
+                    autoFocus
+                    variant="standard"
+                    placeholder="Type anything..."
+                    multiline
+                    maxRows={8}
+                    value={inputValue}
+                    onChange={(e) => {
+                      setInputValue(e.target.value);
+                      
+                      // Change look direction when typing
+                      if (e.target.value.length > 0) {
+                        setLookDirection("down");
+                        
+                        // Clear existing timer and set new one
+                        if (typingTimer) {
+                          clearTimeout(typingTimer);
+                        }
+                        
+                        const newTimer = setTimeout(() => {
+                          setLookDirection("center");
+                        }, 2000);
+                        
+                        setTypingTimer(newTimer);
+                      } else {
+                        // If input is empty, return to center immediately
+                        setLookDirection("center");
+                        if (typingTimer) {
+                          clearTimeout(typingTimer);
+                          setTypingTimer(null);
+                        }
+                      }
+                    }}
+                    onKeyDown={handleKeyDown}
+                    fullWidth
+                    sx={{
+                      "& input, & textarea, & .MuiInput-input": {
+                        fontSize: fontSizes,
+                        fontWeight: "100 !important",
+                        color: "text.primary",
+                        paddingTop: "8px",
+                        lineHeight: 1.2,
+                      },
+                      "& .MuiInput-underline:before, & .MuiInput-underline:hover:not(.Mui-disabled):before, & .MuiInput-underline:after":
+                        {
+                          borderBottom: "none",
+                        },
+                    }}
+                  />
+                  <IconButton
+                    sx={{
+                      color: "rgba(0, 0, 0, 0.4)",
+                      marginTop: "8px",
+                      opacity: inputValue.trim() ? 1 : 0,
+                      transition: "opacity 0.3s ease-in-out",
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.04)",
+                      },
+                    }}
+                    size="large"
+                    onClick={handleSubmit}
+                  >
+                    <KeyboardReturn sx={{ fontSize: fontSizes }} />
+                  </IconButton>
+                </Box>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </Box>
+
+        {/* Columna derecha */}
+        <Box
+          sx={{
+            flex: 1,
+            height: "100vh",
+            overflowY: "auto",
+            overflowX: "hidden",
+            paddingLeft: "24px",
+            paddingRight: 4,
+            paddingTop: 4,
+            paddingBottom: 4,
+            minWidth: 0, // Permite que el contenido se contraiga
+          }}
+        >
+          {submittedMessage && (
+            <Box
+              key={submittedMessage}
+              sx={{
+                width: "100%",
+                overflow: "visible",
+              }}
+            >
+              <DustText
+                text={`"${submittedMessage}"`}
+                duration={1}
+                delay={0.04}
+                blur={6}
+                distance={-5}
+                sx={{
+                  color: "rgba(0, 0, 0, 0.4)",
+                  fontSize: contentFontSizes,
+                  fontWeight: "100",
+                  lineHeight: 2,
+                  fontStyle: "normal",
+                  letterSpacing: "normal",
+                  marginBottom: "1rem",
+                }}
+              />
+
+              {/* Respuesta */}
+              <Box
+                sx={{
+                  marginTop: 4,
+                }}
+              >
+                {/* New chip system */}
+                {groupedElements.map((group, groupIndex) => (
+                  <Box key={groupIndex} sx={{ mb: 2 }}>
+                    {group.type === "chipRow" && (
+                      <Box>
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          sx={{
+                            minHeight: "40px",
+                            justifyContent: "flex-start",
+                          }}
+                        >
+                          {group.chips.map((chip) => (
+                            <DynamicChip
+                              key={`${chip.label}-${chip.messageIndex}`}
+                              icon={chip.icon}
+                              label={chip.label}
+                              status={chip.status}
+                              content={chip.content}
+                              onExpand={(chipData) =>
+                                handleChipChange(chipData, groupIndex)
+                              }
+                              isActive={
+                                activeChips[groupIndex]?.label === chip.label
+                              }
+                              startDelay={0} // No delay, appear immediately when added
+                            />
+                          ))}
+                        </Stack>
+
+                        {/* Shared expanded content area for this chip group */}
+                        <Collapse in={!!activeChips[groupIndex]}>
+                          <Paper
+                            elevation={0}
+                            sx={{
+                              mt: 1,
+                              p: 2,
+                              backgroundColor: "rgba(0, 0, 0, 0.02)",
+                              border: "1px solid rgba(0, 0, 0, 0.08)",
+                              borderRadius: 2,
+                              fontSize: "13px !important",
+                              width: "100%",
+                              position: "relative",
+                              "& *": {
+                                fontSize: "13px !important",
+                              },
+                            }}
+                          >
+                            {/* Close button */}
+                            <IconButton
+                              onClick={() => handleChipChange(null, groupIndex)}
+                              sx={{
+                                position: "absolute",
+                                top: 8,
+                                right: 8,
+                                padding: 0.5,
+                                color: "rgba(0, 0, 0, 0.4)",
+                                "&:hover": {
+                                  backgroundColor: "rgba(0, 0, 0, 0.04)",
+                                  color: "rgba(0, 0, 0, 0.6)",
+                                },
+                              }}
+                            >
+                              <CloseIcon sx={{ fontSize: "16px" }} />
+                            </IconButton>
+
+                            {displayChips[groupIndex] && (
+                              <>
+                                <Typography
+                                  variant="subtitle2"
+                                  sx={{
+                                    fontWeight: 500,
+                                    fontSize: "14px !important",
+                                    marginBottom: 1,
+                                    paddingRight: 3, // Space for close button
+                                  }}
+                                >
+                                  {displayChips[groupIndex].label}
+                                </Typography>
+                                {typeof displayChips[groupIndex].content ===
+                                "string" ? (
+                                  <Typography
+                                    sx={{
+                                      fontSize: "13px !important",
+                                      fontFamily: "monospace",
+                                    }}
+                                  >
+                                    {displayChips[groupIndex].content}
+                                  </Typography>
+                                ) : (
+                                  <Box>
+                                    <JsonView
+                                      value={displayChips[groupIndex].content}
+                                      collapsed={1}
+                                      style={{
+                                        backgroundColor: "transparent",
+                                        fontSize: "13px",
+                                      }}
+                                    />
+                                  </Box>
+                                )}
+                              </>
+                            )}
+                          </Paper>
+                        </Collapse>
+                      </Box>
+                    )}
+
+                    {group.type === "text" && (
+                      <Box
+                        sx={{
+                          fontFamily: "var(--font-exo2), sans-serif",
+                          lineHeight: 1.6, // Cambia aquí el line height
+                          "& *": {
+                            fontFamily:
+                              "var(--font-exo2), sans-serif !important",
+                            lineHeight: "inherit !important", // Hereda el line height
+                          },
+                          "& table": {
+                            borderCollapse: "collapse",
+                            width: "100%",
+                            marginBottom: 2,
+                          },
+                          "& th, & td": {
+                            border: "1px solid #ddd",
+                            padding: "8px",
+                            textAlign: "left",
+                          },
+                          "& th": {
+                            backgroundColor: "#f5f5f5",
+                            fontWeight: "bold",
+                          },
+                        }}
+                      >
+                        <TypingEffect text={group.content} speed={TYPING_SPEED}>
+                          {(displayedText) => (
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                              {displayedText}
+                            </ReactMarkdown>
+                          )}
+                        </TypingEffect>
+                      </Box>
+                    )}
+                  </Box>
+                ))}
+
+                {/* Show initial loading only if no states yet */}
+                {isLoading && agentStates.length === 0 && (
+                  <Typography
+                    component="span"
+                    sx={{
+                      fontSize: "inherit",
+                      fontWeight: "inherit",
+                      opacity: 0.7,
+                    }}
+                  >
+                    Thinking...
+                  </Typography>
+                )}
+              </Box>
+            </Box>
+          )}
+        </Box>
+      </Box>
+    </Box>
+  );
+}

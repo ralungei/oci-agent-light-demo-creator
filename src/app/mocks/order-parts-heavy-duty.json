@@ -5,14 +5,14 @@
   "messages": [
     {
       "type": "text",
-      "content": "Excellent choice! The Heavy-duty variant (HD-2024) is perfect for industrial applications.",
+      "content": "**Excellent choice!** HD-2024 is **perfect for industrial** applications.",
       "delay": 50
     },
     {
       "type": "chip",
       "chipData": {
         "label": "Processing Order",
-        "state": "loading",
+        "status": "loading",
         "icon": "Wrench"
       },
       "delay": 80
@@ -26,14 +26,14 @@
       "type": "chip",
       "chipData": {
         "label": "Order Confirmed",
-        "state": "success",
+        "status": "success",
         "icon": "ListTodo"
       },
       "delay": 60
     },
     {
       "type": "text",
-      "content": "Your order has been processed successfully. Order reference: **ORD-HD-2024-001**\n\nYou will receive a confirmation email shortly with tracking details.",
+      "content": "**Order processed successfully!**\n\n- **Reference:** ORD-HD-2024-001\n- **Confirmation email** coming shortly",
       "delay": 50
     }
   ]

@@ -1,0 +1,125 @@
+{
+  "id": "parts-search-flow",
+  "name": "Parts Search and Selection Flow",
+  "keywords": ["need parts", "production line", "conveyor", "motor", "spare parts", "equipment"],
+  "messages": [
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Planning",
+        "status": "info",
+        "icon": "Lightbulb",
+        "content": {
+          "task": "Production Line Parts Search",
+          "analysisSteps": [
+            "Parse user request for part specifications",
+            "Identify key search terms and filters",
+            "Select appropriate Oracle Fusion ERP catalogs",
+            "Prepare search query optimization"
+          ],
+          "estimatedTime": "2-3 seconds",
+          "confidence": "95%"
+        }
+      },
+      "delay": 100
+    },
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Calling Oracle Fusion ERP API",
+        "status": "warning",
+        "icon": "SatelliteDish",
+        "content": {
+          "description": "Searching Oracle Fusion ERP product catalog for heavy-duty conveyor motors matching production line requirements.",
+          "function": "searchProductCatalog",
+          "endpoint": "/fusion/erp/api/v1/products/search",
+          "parameters": {
+            "searchTerms": ["production line", "spare parts", "conveyor motor"],
+            "filters": {
+              "voltage": "380V",
+              "powerRange": "10-25HP",
+              "category": "Industrial Motors",
+              "availability": "in_stock"
+            },
+            "maxResults": 50,
+            "sortBy": "relevance"
+          }
+        }
+      },
+      "delay": 100
+    },
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Receiving Search Results",
+        "status": "success",
+        "icon": "FileSpreadsheet",
+        "content": {
+          "system": "Oracle Fusion ERP",
+          "searchQuery": "production line spare parts conveyor motor",
+          "catalogsSearched": [
+            "Industrial Motors Catalog",
+            "Conveyor Systems Parts",
+            "Heavy-Duty Equipment"
+          ],
+          "searchFilters": {
+            "powerRange": "10-25 HP",
+            "voltage": "380V",
+            "application": "Production Line",
+            "availability": "In Stock"
+          },
+          "searchStatus": "Retrieved 2,847 matching products"
+        }
+      },
+      "delay": 120
+    },
+    {
+      "type": "agent_state",
+      "agentStateData": {
+        "system": "Oracle Fusion ERP",
+        "catalog": "Product Catalog",
+        "searchTerms": ["production line", "spare parts", "conveyor", "motor"],
+        "status": "searching",
+        "resultsFound": 2847
+      },
+      "delay": 80
+    },
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Processing Search Results",
+        "status": "info",
+        "icon": "Lightbulb",
+        "content": "Received 2,847 products from Oracle Fusion ERP. Now I need to filter these results based on the user's production line requirements. Looking for heavy-duty motors with 380V specification and suitable power range. The search returned many options but I should focus on the ones that best match conveyor belt motor applications. I'll select the top 2 candidates that offer the best combination of specifications and availability for the user to choose from."
+      },
+      "delay": 90
+    },
+    {
+      "type": "text",
+      "content": "Perfect! Found exactly what you need\n\nSearch Results:\n- **2,847 products** searched across 3 catalogs\n- **380V motors** in 10-25HP range\n- In stock and production-ready\n\n**2 Perfect Matches:**\n\n**HD-2024 (15HP, 380V)**\n- Best for: Standard production loads\n- Features: TEFC enclosure, industrial-grade\n- Price: **$2,500-$3,200** (most cost-effective)\n\n**HD-2025 (20HP, 380V)**\n- Best for: High-demand environments\n- Features: Ultra heavy-duty, maximum reliability\n- Price: **$3,800-$4,500** (premium performance)\n\nReady to Order:\n- Both 380V compatible ✅\n- Industrial construction ✅\n- **Immediate availability** ✅\n\nWhich power level fits your needs?",
+      "delay": 50
+    },
+    {
+      "type": "interactive",
+      "interactiveData": {
+        "inputType": "choice",
+        "title": "Select Part for Detailed Analysis",
+        "options": [
+          { 
+            "value": "hd_motor_2024", 
+            "label": "HD-2024 - Heavy-duty conveyor belt motor (15HP, 380V)", 
+            "type": "product",
+            "details": "Power: 15HP | Voltage: 380V | RPM: 1750 | Price Range: $2,500-$3,200"
+          },
+          { 
+            "value": "hd_motor_2025", 
+            "label": "HD-2025 - Ultra heavy-duty conveyor motor (20HP, 380V)", 
+            "type": "product",
+            "details": "Power: 20HP | Voltage: 380V | RPM: 1450 | Price Range: $3,800-$4,500"
+          }
+        ]
+      },
+      "delay": 30
+    }
+  ]
+}

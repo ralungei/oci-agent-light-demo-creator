@@ -1,4 +1,4 @@
-import { Brain, Database, Shield, AlertTriangle, ListTodo, Wrench, ScanEye } from "lucide-react";
+import { Brain, Database, Shield, AlertTriangle, ListTodo, Wrench, ScanEye, Lightbulb, SatelliteDish, FileSpreadsheet } from "lucide-react";
 
 // Icon mapping
 const iconMap = {
@@ -8,21 +8,36 @@ const iconMap = {
   "AlertTriangle": AlertTriangle,
   "ListTodo": ListTodo,
   "Wrench": Wrench,
-  "ScanEye": ScanEye
+  "ScanEye": ScanEye,
+  "Lightbulb": Lightbulb,
+  "SatelliteDish": SatelliteDish,
+  "FileSpreadsheet": FileSpreadsheet
 };
 
 // Import all mock files
-import databaseErrors from '../mocks/database-errors.json';
+// import databaseErrors from '../mocks/database-errors.json';
 import defaultMock from '../mocks/default.json';
-import orderPartsInitial from '../mocks/order-parts-initial.json';
-import orderPartsHeavyDuty from '../mocks/order-parts-heavy-duty.json';
-import orderPartsStandard from '../mocks/order-parts-standard.json';
+// import orderPartsInitial from '../mocks/order-parts-initial.json';
+// import orderPartsHeavyDuty from '../mocks/order-parts-heavy-duty.json';
+// import orderPartsStandard from '../mocks/order-parts-standard.json';
+import partsSearchFlow from '../mocks/parts-search-flow.json';
+import partSelectionHd2024 from '../mocks/part-selection-hd2024.json';
+import supplierContactFlow from '../mocks/supplier-contact-flow.json';
+import offerAnalysisFlow from '../mocks/offer-analysis-flow.json';
+import orderCreationFlow from '../mocks/order-creation-flow.json';
+import orderStatusFlow from '../mocks/order-status-flow.json';
 
 const mockFlows = [
-  databaseErrors,
-  orderPartsInitial,
-  orderPartsHeavyDuty, 
-  orderPartsStandard,
+  // databaseErrors,
+  partsSearchFlow,
+  partSelectionHd2024,
+  supplierContactFlow,
+  offerAnalysisFlow,
+  orderCreationFlow,
+  orderStatusFlow,
+  // orderPartsInitial,
+  // orderPartsHeavyDuty, 
+  // orderPartsStandard,
   defaultMock
 ];
 

@@ -21,10 +21,14 @@ import BlinkingEye from "./components/BlinkingEye";
 import DustText from "./components/DustText";
 import DynamicChip from "./components/DynamicChip";
 import TypingEffect from "./components/TypingEffect";
+import ProgressTracker from "./components/ProgressTracker";
+import ComparisonTable from "./components/ComparisonTable";
+import ProcessDiagram from "./components/ProcessDiagram";
+import SupplierCard from "./components/SupplierCard";
 import createGenaiAgentService from "./services/genaiAgentService";
 import { getMockFlow } from "./services/mockService";
 import { getErrorMessage } from "./utils/errorMessages";
-import { ArrowRight, Circle, Package, Settings, Play, CheckCircle, AlertCircle } from "lucide-react";
+import { ArrowRight, Circle, Package, Settings, Play, CheckCircle, AlertCircle, Lightbulb, SatelliteDish, FileSpreadsheet } from "lucide-react";
 
 // Constants
 const TYPING_SPEED = 5;
@@ -102,6 +106,50 @@ export default function Home() {
           interactiveData: message.interactiveData,
           messageIndex: index,
         });
+      } else if (message.type === "progress_tracker") {
+        // If we have accumulated chips, add them as a group first
+        if (currentChipGroup.length > 0) {
+          groups.push({ type: "chipRow", chips: currentChipGroup });
+          currentChipGroup = [];
+        }
+        groups.push({
+          type: "progress_tracker",
+          progressData: message.progressData,
+          messageIndex: index,
+        });
+      } else if (message.type === "comparison_table") {
+        // If we have accumulated chips, add them as a group first
+        if (currentChipGroup.length > 0) {
+          groups.push({ type: "chipRow", chips: currentChipGroup });
+          currentChipGroup = [];
+        }
+        groups.push({
+          type: "comparison_table",
+          comparisonData: message.comparisonData,
+          messageIndex: index,
+        });
+      } else if (message.type === "process_diagram") {
+        // If we have accumulated chips, add them as a group first
+        if (currentChipGroup.length > 0) {
+          groups.push({ type: "chipRow", chips: currentChipGroup });
+          currentChipGroup = [];
+        }
+        groups.push({
+          type: "process_diagram",
+          processData: message.processData,
+          messageIndex: index,
+        });
+      } else if (message.type === "supplier_card") {
+        // If we have accumulated chips, add them as a group first
+        if (currentChipGroup.length > 0) {
+          groups.push({ type: "chipRow", chips: currentChipGroup });
+          currentChipGroup = [];
+        }
+        groups.push({
+          type: "supplier_card",
+          supplierData: message.supplierData,
+          messageIndex: index,
+        });
       }
     });
 
@@ -167,18 +215,19 @@ export default function Home() {
   };
 
   const handleSubmit = async () => {
-    if (inputValue.trim() && genaiService) {
-      setSubmittedMessage(inputValue);
+    const trimmedInput = inputValue.trim();
+    if (trimmedInput && genaiService) {
+      setSubmittedMessage(trimmedInput);
       setInputValue("");
       setAgentStates([{ trace: "connecting" }]);
       setIsLoading(true);
 
       // Start the chip simulation when submitting
-      startSimulation(inputValue);
+      startSimulation(trimmedInput);
 
       try {
         await genaiService.sendMessage(
-          inputValue,
+          trimmedInput,
           (chunk) => {
             // Add text chunks as they arrive
             setAgentStates((prev) => {
@@ -448,7 +497,7 @@ export default function Home() {
               }}
             >
               <DustText
-                text={`"${submittedMessage}"`}
+                text={submittedMessage}
                 duration={1}
                 delay={0.04}
                 blur={6}
@@ -560,6 +609,30 @@ export default function Home() {
                                   >
                                     {displayChips[groupIndex].content}
                                   </Typography>
+                                ) : displayChips[groupIndex].content?.description ? (
+                                  <Box>
+                                    <Typography
+                                      sx={{
+                                        fontSize: "13px !important",
+                                        marginBottom: 2,
+                                        lineHeight: 1.4,
+                                      }}
+                                    >
+                                      {displayChips[groupIndex].content.description}
+                                    </Typography>
+                                    <JsonView
+                                      value={{
+                                        function: displayChips[groupIndex].content.function,
+                                        endpoint: displayChips[groupIndex].content.endpoint,
+                                        parameters: displayChips[groupIndex].content.parameters
+                                      }}
+                                      collapsed={1}
+                                      style={{
+                                        backgroundColor: "transparent",
+                                        fontSize: "13px",
+                                      }}
+                                    />
+                                  </Box>
                                 ) : (
                                   <Box>
                                     <JsonView
@@ -660,6 +733,22 @@ export default function Home() {
                           </Stack>
                         )}
                       </Box>
+                    )}
+
+                    {group.type === "progress_tracker" && (
+                      <ProgressTracker data={group.progressData} />
+                    )}
+
+                    {group.type === "comparison_table" && (
+                      <ComparisonTable data={group.comparisonData} />
+                    )}
+
+                    {group.type === "process_diagram" && (
+                      <ProcessDiagram data={group.processData} />
+                    )}
+
+                    {group.type === "supplier_card" && (
+                      <SupplierCard data={group.supplierData} />
                     )}
                   </Box>
                 ))}

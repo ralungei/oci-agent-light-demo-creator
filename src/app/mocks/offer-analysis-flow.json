@@ -1,0 +1,157 @@
+{
+  "id": "offer-analysis-flow",
+  "name": "Offer Analysis and Comparison",
+  "keywords": ["Analyze current offers (2 received)", "analyze_current", "analyze offers", "compare quotes", "analyze current"],
+  "messages": [
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Planning",
+        "status": "info",
+        "icon": "Lightbulb",
+        "content": "Perfect! The user wants to analyze the current offers we've received. I have 2 competitive quotes: TechFlow Industries at $2,850 and IndustrialMax Corp at $3,100. I need to perform comprehensive analysis considering total cost, delivery timeline, supplier reliability, and value-for-money. I'll use our analytics engine to calculate weighted scores based on price, delivery speed, supplier track record, and shipping costs."
+      },
+      "delay": 120
+    },
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Calling Analysis Engine API",
+        "status": "warning",
+        "icon": "SatelliteDish",
+        "content": {
+          "description": "Analyzing supplier quotes using comprehensive scoring algorithm to determine optimal choice based on price, delivery, and reliability factors.",
+          "function": "analyzeSupplierQuotes",
+          "endpoint": "/analytics/procurement/api/v1/quotes/analyze",
+          "parameters": {
+            "partNumber": "HD-2024",
+            "quotes": [
+              {"supplier": "TechFlow Industries", "price": 2850, "delivery": 5, "shipping": 120},
+              {"supplier": "IndustrialMax Corp", "price": 3100, "delivery": 3, "shipping": 85}
+            ],
+            "analysisType": "comprehensive",
+            "weightings": {
+              "price": 0.4,
+              "delivery": 0.3,
+              "reliability": 0.2,
+              "shipping": 0.1
+            },
+            "includeRecommendation": true
+          }
+        }
+      },
+      "delay": 100
+    },
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Receiving Analysis Results",
+        "status": "success",
+        "icon": "FileSpreadsheet",
+        "content": {
+          "calculationTypes": [
+            "Total cost analysis",
+            "ROI projections",
+            "Risk assessment scores",
+            "Delivery optimization"
+          ],
+          "processingTime": "3.2 seconds",
+          "dataPoints": 47,
+          "confidenceLevel": "96%"
+        }
+      },
+      "delay": 100
+    },
+    {
+      "type": "agent_state",
+      "agentStateData": {
+        "analysis": {
+          "bestPrice": {
+            "supplier": "TechFlow Industries",
+            "amount": "$2,850",
+            "savings": "$250 vs average"
+          },
+          "fastestDelivery": {
+            "supplier": "IndustrialMax Corp", 
+            "time": "3 days",
+            "method": "Express shipping"
+          },
+          "bestOverall": {
+            "supplier": "TechFlow Industries",
+            "score": "95/100",
+            "reasons": ["Lowest price", "Good delivery time", "Excellent reputation"]
+          },
+          "totalSavings": "$450 vs highest quote"
+        }
+      },
+      "delay": 80
+    },
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Planning",
+        "status": "info",
+        "icon": "Lightbulb",
+        "content": "Excellent! The analysis is complete and the results are very clear. TechFlow Industries offers the best price at $2,850 with excellent reputation, while IndustrialMax Corp has the fastest delivery at 3 days. Looking at the overall scores, TechFlow Industries rates 95/100 which is significantly higher. The price advantage is substantial - $450 savings compared to the highest quote. Their delivery time of 5 days is still very reasonable. Based on price, quality, and reliability, TechFlow Industries is clearly the optimal choice."
+      },
+      "delay": 100
+    },
+    {
+      "type": "comparison_table",
+      "comparisonData": {
+        "title": "Supplier Quote Comparison - HD-2024 Motor",
+        "columns": ["Supplier", "Price", "Delivery", "Shipping", "Total", "Score"],
+        "rows": [
+          {
+            "supplier": "TechFlow Industries",
+            "price": "$2,850",
+            "delivery": "5 days",
+            "shipping": "$120",
+            "total": "$2,970",
+            "score": "95/100",
+            "recommended": true
+          },
+          {
+            "supplier": "IndustrialMax Corp",
+            "price": "$3,100", 
+            "delivery": "3 days",
+            "shipping": "$85",
+            "total": "$3,185",
+            "score": "88/100",
+            "recommended": false
+          },
+          {
+            "supplier": "Global Parts Ltd",
+            "price": "Pending",
+            "delivery": "Unknown",
+            "shipping": "Unknown", 
+            "total": "Pending",
+            "score": "N/A",
+            "recommended": false
+          }
+        ]
+      },
+      "delay": 60
+    },
+    {
+      "type": "text",
+      "content": "I've completed the analysis and the results are quite clear. **TechFlow Industries** comes out as the winner with a score of **95/100** compared to IndustrialMax Corp's **88/100**. \n\nThe main advantage is cost - TechFlow Industries offers **$215 in savings** at **$2,970** versus **$3,185** from IndustrialMax Corp. TechFlow also has an excellent track record with a **98% on-time delivery** rate based on 47 similar orders.\n\nThe trade-off is delivery time: IndustrialMax Corp can deliver in 3 days while TechFlow Industries needs 5 days. However, 5 days is still quite reasonable for this type of equipment.\n\nUnless you need it in 3 days vs 5, **TechFlow Industries is best value.**",
+      "delay": 50
+    },
+    {
+      "type": "interactive",
+      "interactiveData": {
+        "inputType": "choice",
+        "title": "Ready to create purchase order?",
+        "options": [
+          { 
+            "value": "create_order_techparts", 
+            "label": "Create order with TechFlow Industries ($2,970)", 
+            "type": "action"
+          }
+        ]
+      },
+      "delay": 30
+    }
+  ]
+}

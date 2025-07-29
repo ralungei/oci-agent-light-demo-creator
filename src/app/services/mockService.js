@@ -14,19 +14,37 @@ const iconMap = {
 // Import all mock files
 import databaseErrors from '../mocks/database-errors.json';
 import defaultMock from '../mocks/default.json';
+import orderPartsInitial from '../mocks/order-parts-initial.json';
+import orderPartsHeavyDuty from '../mocks/order-parts-heavy-duty.json';
+import orderPartsStandard from '../mocks/order-parts-standard.json';
 
 const mockFlows = [
   databaseErrors,
+  orderPartsInitial,
+  orderPartsHeavyDuty, 
+  orderPartsStandard,
   defaultMock
 ];
+
+// Context state for tracking interactive flows
+let conversationContext = {
+  waitingForChoice: false,
+  lastFlowId: null
+};
 
 /**
  * Finds the best matching mock flow based on user input
  * @param {string} userInput - The user's input message
+ * @param {Object} previousState - Optional previous conversation state
  * @returns {Object} The selected mock flow with processed icons
  */
-export function getMockFlow(userInput) {
+export function getMockFlow(userInput, previousState = null) {
   const input = userInput.toLowerCase();
+  
+  // Update context if provided
+  if (previousState) {
+    conversationContext = { ...conversationContext, ...previousState };
+  }
   
   // Find the best matching flow
   let bestMatch = defaultMock;
@@ -45,6 +63,15 @@ export function getMockFlow(userInput) {
     }
   }
   
+  // Update context based on selected flow
+  const hasInteractiveMessage = bestMatch.messages.some(msg => msg.type === "interactive");
+  if (hasInteractiveMessage) {
+    conversationContext.waitingForChoice = true;
+    conversationContext.lastFlowId = bestMatch.id;
+  } else {
+    conversationContext.waitingForChoice = false;
+  }
+  
   // Process the selected flow to replace icon strings with actual components
   const processedMessages = bestMatch.messages.map(message => {
     if (message.type === "chip" && message.chipData.icon) {
@@ -61,7 +88,8 @@ export function getMockFlow(userInput) {
   
   return {
     ...bestMatch,
-    messages: processedMessages
+    messages: processedMessages,
+    context: conversationContext
   };
 }
 

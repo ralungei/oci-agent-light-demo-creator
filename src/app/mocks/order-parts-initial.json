@@ -1,0 +1,37 @@
+{
+  "id": "order-parts-initial",
+  "name": "Order Parts - Initial",
+  "keywords": ["order", "parts", "spare", "equipment", "purchase", "buy"],
+  "messages": [
+    {
+      "type": "text",
+      "content": "I can help you order spare parts. Let me check our inventory system.",
+      "delay": 50
+    },
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Connecting to Parts Inventory",
+        "state": "loading",
+        "icon": "Database"
+      },
+      "delay": 80
+    },
+    {
+      "type": "text",
+      "content": "I found the part you're looking for. We have two variants available:",
+      "delay": 50
+    },
+    {
+      "type": "interactive",
+      "interactiveData": {
+        "inputType": "choice",
+        "options": [
+          { "value": "heavy_duty", "label": "Heavy-duty variant (HD-2024)", "type": "product" },
+          { "value": "standard", "label": "Standard variant (ST-2024)", "type": "product" }
+        ]
+      },
+      "delay": 30
+    }
+  ]
+}

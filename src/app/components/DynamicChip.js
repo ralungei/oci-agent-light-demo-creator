@@ -15,9 +15,10 @@ export default function DynamicChip({
   startDelay = 0,
 }) {
   const theme = useTheme();
-  const [stage, setStage] = useState("hidden");
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
+  const [showExpandIcon, setShowExpandIcon] = useState(false);
 
   const getStatusColor = () => {
     switch (status) {
@@ -36,174 +37,133 @@ export default function DynamicChip({
   const statusColor = getStatusColor();
 
   useEffect(() => {
-    // Start with circle appearing
-    setTimeout(() => setStage("circle"), startDelay + 300);
-    // Extend to show text after 1 second
-    setTimeout(() => setStage("extended"), startDelay + 800);
-    // Complete after 3 seconds
-    setTimeout(() => setIsCompleted(true), startDelay + 2000);
-    // Collapse back to circle after 5 seconds
-    setTimeout(() => setStage("circle"), startDelay + 2500);
+    // Aparece el círculo
+    setTimeout(() => setIsVisible(true), startDelay + 300);
+
+    // Se expande automáticamente
+    setTimeout(() => setShowExpandIcon(true), startDelay + 800);
+
+    // Termina de cargar
+    setTimeout(() => setIsLoading(false), startDelay + 2000);
+
+    // Se contrae automáticamente
+    setTimeout(() => setShowExpandIcon(false), startDelay + 2500);
   }, [startDelay]);
 
   const handleClick = () => {
-    if (stage !== "hidden") {
-      // If this chip is already active, collapse the content
+    if (isVisible) {
       if (isActive) {
         onExpand(null);
       } else {
-        onExpand({ label, status, content });
+        onExpand({
+          label,
+          status,
+          content: content || "No additional information available",
+        });
       }
     }
   };
 
+  // Mostrar texto si está en hover O si está mostrando el ícono de expandir
+  const shouldShowText = isHovered || showExpandIcon;
+
   return (
-    <AnimatePresence mode="wait">
-      {stage !== "hidden" && (
+    <AnimatePresence>
+      {isVisible && (
         <motion.div
-          layoutId={`chip-${label}`}
           initial={{ scale: 0, opacity: 0 }}
           animate={{
             scale: 1,
             opacity: 1,
-            width:
-              stage === "extended" || (stage === "circle" && isHovered)
-                ? "160px"
-                : "40px",
           }}
           exit={{ scale: 0, opacity: 0 }}
-          whileHover={{
-            scale: 1.05,
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-          }}
+          whileHover={{ scale: 1.05 }}
           transition={{
             scale: { type: "spring", damping: 20, stiffness: 300 },
-            opacity: { duration: 0.3 },
-            width: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
           }}
           onClick={handleClick}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           style={{
-            height: "40px",
+            height: 40,
+            minWidth: 40,
             backgroundColor: isActive ? `${statusColor}15` : "transparent",
-            border: `1px solid ${isCompleted ? statusColor : "#999"}`,
-            borderRadius: "20px",
-            display: "flex",
+            border: `1px solid ${!isLoading ? statusColor : "#999"}`,
+            borderRadius: 20,
+            display: "inline-flex",
             alignItems: "center",
-            justifyContent:
-              stage === "extended" || (stage === "circle" && isHovered)
-                ? "flex-start"
-                : "center",
-            paddingLeft:
-              stage === "extended" || (stage === "circle" && isHovered)
-                ? "12px"
-                : "0",
-            paddingRight:
-              stage === "extended" || (stage === "circle" && isHovered)
-                ? "16px"
-                : "0",
+            justifyContent: "flex-start",
+            paddingLeft: 12,
+            paddingRight: shouldShowText ? 16 : 12,
             overflow: "hidden",
-            position: "relative",
             cursor: "pointer",
-            transition: "border-color 0.3s ease, background-color 0.3s ease",
+            boxShadow: isHovered ? "0 4px 12px rgba(0, 0, 0, 0.15)" : "none",
           }}
         >
-          {/* Icon */}
-          <AnimatePresence mode="wait">
-            {!isCompleted ? (
-              <motion.div
-                key="loading"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.2 }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <CircularProgress
-                  size={16}
-                  sx={{ color: "#666", display: "block" }}
-                />
-              </motion.div>
+          {/* Ícono principal */}
+          <motion.div
+            style={{
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {isLoading ? (
+              <CircularProgress size={16} sx={{ color: "#666" }} />
             ) : (
-              <motion.div
-                key="completed"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.2 }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Icon size={16} color={statusColor} />
-              </motion.div>
+              <Icon size={16} color={statusColor} />
             )}
-          </AnimatePresence>
+          </motion.div>
 
-          {/* Text */}
-          <AnimatePresence>
-            {(stage === "extended" || (stage === "circle" && isHovered)) && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-                style={{
-                  marginLeft: "8px",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                <Typography
-                  sx={{
-                    color: isCompleted ? statusColor : "#000",
-                    fontSize: "16px",
-                    fontWeight: isActive ? 500 : 300,
-                    transition: "color 0.3s ease, font-weight 0.3s ease",
-                  }}
-                >
-                  {label}
-                </Typography>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Chevron icon */}
-          {stage === "extended" && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                rotate: isActive ? 180 : 0,
-              }}
-              transition={{
-                opacity: { duration: 0.3 },
-                scale: { duration: 0.3 },
-                rotate: { duration: 0.3 },
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginLeft: "auto",
-                marginRight: "4px",
+          {/* Contenedor del texto y flecha con animación suave */}
+          <motion.div
+            animate={{
+              width: shouldShowText ? "auto" : 0,
+              opacity: shouldShowText ? 1 : 0,
+              marginLeft: shouldShowText ? 8 : 0,
+            }}
+            transition={{
+              duration: 0.3,
+              ease: "easeInOut",
+            }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <Typography
+              sx={{
+                color: !isLoading ? statusColor : "#000",
+                fontSize: "16px",
+                fontWeight: isActive ? 500 : 300,
               }}
             >
-              <ExpandMoreIcon
-                sx={{
-                  fontSize: "18px",
-                  color: isCompleted ? statusColor : "#666",
-                  transition: "color 0.3s ease",
-                }}
-              />
-            </motion.div>
-          )}
+              {label}
+            </Typography>
+
+            {/* Ícono de expandir solo cuando showExpandIcon es true */}
+            <AnimatePresence>
+              {showExpandIcon && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1, rotate: isActive ? 180 : 0 }}
+                  exit={{ scale: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <ExpandMoreIcon
+                    sx={{
+                      fontSize: 18,
+                      color: !isLoading ? statusColor : "#666",
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

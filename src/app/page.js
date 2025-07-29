@@ -3,6 +3,7 @@
 import { Close as CloseIcon, KeyboardReturn } from "@mui/icons-material";
 import {
   Box,
+  Button,
   Collapse,
   IconButton,
   Paper,
@@ -13,6 +14,7 @@ import {
 import JsonView from "@uiw/react-json-view";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import BlinkingEye from "./components/BlinkingEye";
@@ -22,6 +24,7 @@ import TypingEffect from "./components/TypingEffect";
 import createGenaiAgentService from "./services/genaiAgentService";
 import { getMockFlow } from "./services/mockService";
 import { getErrorMessage } from "./utils/errorMessages";
+import { ArrowRight, Circle, Package, Settings, Play, CheckCircle, AlertCircle } from "lucide-react";
 
 // Constants
 const TYPING_SPEED = 5;
@@ -67,7 +70,7 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Group messages into chip rows and text blocks
+  // Group messages into chip rows, text blocks, and interactive elements
   const groupMessages = (messages) => {
     const groups = [];
     let currentChipGroup = [];
@@ -85,6 +88,18 @@ export default function Home() {
         groups.push({
           type: "text",
           content: message.content,
+          messageIndex: index,
+        });
+      } else if (message.type === "interactive") {
+        // If we have accumulated chips, add them as a group first
+        if (currentChipGroup.length > 0) {
+          groups.push({ type: "chipRow", chips: currentChipGroup });
+          currentChipGroup = [];
+        }
+        // Add the interactive message
+        groups.push({
+          type: "interactive",
+          interactiveData: message.interactiveData,
           messageIndex: index,
         });
       }
@@ -200,6 +215,59 @@ export default function Home() {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
+    }
+  };
+
+  // Get icon by option type
+  const getIconByType = (type) => {
+    switch(type) {
+      case "product": return Package;
+      case "service": return Settings;
+      case "action": return Play;
+      case "success": return CheckCircle;
+      case "warning": return AlertCircle;
+      default: return Circle;
+    }
+  };
+
+  // Handle interactive option selection
+  const handleOptionSelect = (optionLabel) => {
+    // Directly trigger the submission process without filling the text field
+    setSubmittedMessage(optionLabel);
+    setAgentStates([{ trace: "connecting" }]);
+    setIsLoading(true);
+
+    // Start the chip simulation with the selected option
+    startSimulation(optionLabel);
+
+    // Process through genaiService (if needed for consistency)
+    if (genaiService) {
+      genaiService.sendMessage(
+        optionLabel,
+        (chunk) => {
+          setAgentStates((prev) => {
+            const filtered =
+              prev.length === 1 && prev[0].trace === "connecting" ? [] : prev;
+            return [...filtered, { type: "text", content: chunk }];
+          });
+        },
+        (eventData) => {
+          setAgentStates((prev) => {
+            const filtered =
+              prev.length === 1 && prev[0].trace === "connecting" ? [] : prev;
+            return [...filtered, eventData];
+          });
+        }
+      ).catch((error) => {
+        console.error("Error calling agent:", error);
+        const errorMessage = getErrorMessage(error);
+        setAgentStates((prev) => [
+          ...prev,
+          { type: "error", content: errorMessage },
+        ]);
+      }).finally(() => {
+        setIsLoading(false);
+      });
     }
   };
   return (
@@ -544,6 +612,53 @@ export default function Home() {
                             </ReactMarkdown>
                           )}
                         </TypingEffect>
+                      </Box>
+                    )}
+
+                    {group.type === "interactive" && (
+                      <Box sx={{ mt: 2, mb: 2 }}>
+                        {group.interactiveData.inputType === "choice" && (
+                          <Stack direction="column" spacing={1.5} alignItems="flex-start">
+                            {group.interactiveData.options.map((option, optionIndex) => (
+                              <Button
+                                key={optionIndex}
+                                variant="outlined"
+                                size="large"
+                                onClick={() => handleOptionSelect(option.label)}
+                                sx={{
+                                  textAlign: "left",
+                                  justifyContent: "flex-start",
+                                  padding: "12px 20px",
+                                  fontSize: "1.1rem",
+                                  fontWeight: 400,
+                                  textTransform: "none",
+                                  border: "1px solid rgba(0, 0, 0, 0.2)",
+                                  color: "rgba(0, 0, 0, 0.8)",
+                                  backgroundColor: "white",
+                                  borderRadius: "18px 18px 18px 4px",
+                                  transition: "all 0.2s ease-in-out",
+                                  width: "fit-content",
+                                  "&:hover": {
+                                    backgroundColor: "#f8f8f8",
+                                    transform: "translateX(4px) scale(1.02)",
+                                    borderColor: "rgba(0, 0, 0, 0.3)",
+                                    fontWeight: 600,
+                                  },
+                                  "& .MuiButton-endIcon": {
+                                    color: "rgba(0, 0, 0, 0.6)",
+                                  },
+                                  "& .MuiButton-startIcon": {
+                                    color: "rgba(0, 0, 0, 0.6)",
+                                  },
+                                }}
+                                startIcon={React.createElement(getIconByType(option.type), { size: 14 })}
+                                endIcon={<ArrowRight size={16} />}
+                              >
+                                {option.label}
+                              </Button>
+                            ))}
+                          </Stack>
+                        )}
                       </Box>
                     )}
                   </Box>

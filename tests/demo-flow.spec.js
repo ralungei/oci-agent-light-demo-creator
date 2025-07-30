@@ -1,175 +1,114 @@
 const { chromium } = require("playwright");
 
 (async () => {
-  console.log("🎬 Iniciando demo automática...\n");
-
   const browser = await chromium.launch({
     headless: false,
-    slowMo: 100,
-    args: ["--window-size=1400,900"],
+    slowMo: 150,
   });
 
   const page = await browser.newPage();
-  await page.setViewportSize({ width: 1400, height: 900 });
 
+  // Correct port
   await page.goto("http://localhost:3004/");
-  await page.waitForLoadState("networkidle");
-  await page.waitForTimeout(2000);
 
-  console.log("📝 Escribiendo primera consulta...");
-  await page.getByRole("textbox", { name: "Type anything..." }).click();
-  await page.waitForTimeout(500);
-  await page
-    .getByRole("textbox", { name: "Type anything..." })
-    .type("I need parts for the production line", { delay: 120 });
-  await page.waitForTimeout(1000);
+  // Wait for the text field to appear and be visible
+  await page.waitForSelector('textarea[placeholder="Type anything..."]', {
+    timeout: 10000,
+    state: "visible",
+  });
 
-  console.log("✏️ Refinando la búsqueda...");
-  await page
-    .getByRole("textbox", { name: "Type anything..." })
-    .click({ clickCount: 3 });
-  await page.waitForTimeout(500);
-  await page
-    .getByRole("textbox", { name: "Type anything..." })
-    .type("I need a 15HP motor with 380V for standard shift operation", {
-      delay: 100,
-    });
-  await page.waitForTimeout(1500);
+  // First message
+  const textbox = page.locator('textarea[placeholder="Type anything..."]');
+  await textbox.click();
+  await textbox.fill("I need parts for the production line");
+  await textbox.press("Enter");
 
-  console.log("🔍 Iniciando búsqueda...");
-  await page.getByRole("button", { name: "Advise me, but I want to" }).hover();
-  await page.waitForTimeout(300);
-  await page.getByRole("button", { name: "Advise me, but I want to" }).click();
+  // Wait for response and animations to complete
+  await page.waitForTimeout(5000);
 
-  await page.waitForTimeout(2000);
-  await page.mouse.wheel(0, 300);
-  await page.waitForTimeout(1000);
-
-  console.log("📊 Explorando resultados JSON...");
-  await page
-    .locator("div")
-    .filter({ hasText: /^Receiving Search Results$/ })
-    .first()
-    .scrollIntoViewIfNeeded();
-  await page.waitForTimeout(500);
-  await page
-    .locator("div")
-    .filter({ hasText: /^Receiving Search Results$/ })
-    .first()
-    .click();
-  await page.waitForTimeout(800);
-
-  await page
-    .locator("span")
-    .filter({ hasText: '"response":{...}4 items' })
-    .getByRole("img")
-    .first()
-    .click();
-  await page.waitForTimeout(600);
-
-  await page
-    .locator("span")
-    .filter({ hasText: '"products":[...]2 items' })
-    .getByRole("img")
-    .first()
-    .click();
-  await page.waitForTimeout(600);
-
-  await page
-    .locator("span")
-    .filter({ hasText: "0:{...}5 items" })
-    .getByRole("img")
-    .first()
-    .click();
-  await page.waitForTimeout(1000);
-
-  await page.mouse.wheel(0, 400);
-  await page.waitForTimeout(1000);
-
-  console.log("🛠️ Seleccionando producto...");
-  await page
-    .locator("div")
-    .filter({ hasText: /^Receiving Search Results$/ })
-    .first()
-    .click();
-  await page.waitForTimeout(500);
-
-  await page
-    .getByRole("button", { name: "HD-2024 - Heavy-duty conveyor" })
-    .scrollIntoViewIfNeeded();
-  await page.waitForTimeout(500);
-  await page
-    .getByRole("button", { name: "HD-2024 - Heavy-duty conveyor" })
-    .hover();
-  await page.waitForTimeout(300);
-  await page
-    .getByRole("button", { name: "HD-2024 - Heavy-duty conveyor" })
-    .click();
-
-  await page.waitForTimeout(1500);
-  await page.evaluate(() =>
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })
+  // Second message
+  await textbox.click();
+  await textbox.fill(
+    "I need a 15HP motor with 380V for standard shift operation"
   );
-  await page.waitForTimeout(1500);
+  await textbox.press("Enter");
 
-  console.log("💰 Solicitando cotizaciones...");
-  await page
-    .getByRole("textbox", { name: "Type anything..." })
-    .scrollIntoViewIfNeeded();
-  await page.waitForTimeout(500);
-  await page.getByRole("textbox", { name: "Type anything..." }).click();
-  await page.waitForTimeout(500);
-  await page
-    .getByRole("textbox", { name: "Type anything..." })
-    .type("Ask all 3 suppliers for their prices", { delay: 110 });
-  await page.waitForTimeout(1500);
+  // Wait for the interactive choices to appear
+  await page.waitForSelector(
+    'button:has-text("Advise me, but I want to decide")',
+    {
+      timeout: 10000,
+      state: "visible",
+    }
+  );
 
-  console.log("📧 Enviando emails...");
-  await page.locator(".lucide.lucide-mail").hover();
-  await page.waitForTimeout(300);
-  await page.locator(".lucide.lucide-mail").click();
-
-  await page.waitForTimeout(2000);
-  await page.mouse.wheel(0, 300);
-  await page.waitForTimeout(1000);
-
+  // Click the correct button with full text
   await page
-    .locator("div")
-    .filter({ hasText: /^Email Sent Successfully$/ })
-    .first()
-    .scrollIntoViewIfNeeded();
-  await page.waitForTimeout(500);
-  await page
-    .locator("div")
-    .filter({ hasText: /^Email Sent Successfully$/ })
-    .first()
+    .getByRole("button", { name: "Advise me, but I want to decide" })
     .click();
-  await page.waitForTimeout(1000);
 
-  console.log("📈 Analizando ofertas...");
+  // Wait for the HD-2024 option to appear
+  await page.waitForSelector('button:has-text("HD-2024")', {
+    timeout: 15000,
+    state: "visible",
+  });
+
+  // Click HD-2024 option
   await page
-    .getByRole("button", { name: "Analyze current offers (2" })
-    .scrollIntoViewIfNeeded();
-  await page.waitForTimeout(500);
-  await page.getByRole("button", { name: "Analyze current offers (2" }).hover();
-  await page.waitForTimeout(300);
-  await page.getByRole("button", { name: "Analyze current offers (2" }).click();
+    .getByRole("button", {
+      name: "HD-2024 - Heavy-duty conveyor belt motor (15HP, 380V)",
+    })
+    .click();
 
-  await page.waitForTimeout(1500);
+  // Wait for "Ask all 3 suppliers" button
+  await page.waitForSelector(
+    'button:has-text("Ask all 3 suppliers for their prices")',
+    {
+      timeout: 15000,
+      state: "visible",
+    }
+  );
 
-  console.log("📦 Rastreando pedido...");
   await page
-    .getByRole("textbox", { name: "Type anything..." })
-    .scrollIntoViewIfNeeded();
-  await page.waitForTimeout(500);
-  await page.getByRole("textbox", { name: "Type anything..." }).click();
-  await page.waitForTimeout(500);
-  await page
-    .getByRole("textbox", { name: "Type anything..." })
-    .type("Track order status", { delay: 120 });
+    .getByRole("button", { name: "Ask all 3 suppliers for their prices" })
+    .click();
 
+  // Wait for "Analyze current offers" button
+  await page.waitForSelector('button:has-text("Analyze current offers")', {
+    timeout: 15000,
+    state: "visible",
+  });
+
+  await page
+    .getByRole("button", { name: "Analyze current offers (2 received)" })
+    .click();
+
+  // Wait for "Create order" button
+  await page.waitForSelector(
+    'button:has-text("Create order with TechParts Inc")',
+    {
+      timeout: 15000,
+      state: "visible",
+    }
+  );
+
+  await page
+    .getByRole("button", { name: "Create order with TechParts Inc ($2,970)" })
+    .click();
+
+  // Wait for "Track order status" button
+  await page.waitForSelector('button:has-text("Track order status")', {
+    timeout: 15000,
+    state: "visible",
+  });
+
+  await page.getByRole("button", { name: "Track order status" }).click();
+
+  // Wait for final response
+  await page.waitForTimeout(5000);
+
+  // Keep browser open for a bit to see results
   await page.waitForTimeout(3000);
 
-  console.log("\n✨ ¡Demo completada con éxito!");
-  console.log("🎯 La ventana permanecerá abierta para revisión");
+  await browser.close();
 })();

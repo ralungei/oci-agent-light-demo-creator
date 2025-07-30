@@ -29,9 +29,11 @@ import supplierContactFlow from '../mocks/supplier-contact-flow.json';
 import offerAnalysisFlow from '../mocks/offer-analysis-flow.json';
 import orderCreationFlow from '../mocks/order-creation-flow.json';
 import orderStatusFlow from '../mocks/order-status-flow.json';
+import thankYou from '../mocks/thank-you.json';
 
 const mockFlows = [
   // databaseErrors,
+  thankYou,
   partsSearchFlow,
   partsAutonomyFlow,
   partsAdvisoryFlow,

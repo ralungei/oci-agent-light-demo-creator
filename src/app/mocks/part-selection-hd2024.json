@@ -44,7 +44,7 @@
         "content": {
           "response": {
             "status": "success",
-            "timestamp": "2024-12-04T14:33:25Z",
+            "timestamp": "2025-07-30T10:16:25Z",
             "productId": "HD-2024",
             "productDetails": {
               "description": "Heavy-duty conveyor belt motor",
@@ -131,7 +131,7 @@
         "content": {
           "response": {
             "status": "success",
-            "timestamp": "2024-12-04T14:33:45Z",
+            "timestamp": "2025-07-30T10:16:45Z",
             "suppliersFound": 3,
             "qualifiedSuppliers": [
               {
@@ -184,7 +184,7 @@
         "options": [
           {
             "value": "request_quotes",
-            "label": "Request quotes from all 3 suppliers",
+            "label": "Ask all 3 suppliers for their prices",
             "type": "action"
           }
         ]

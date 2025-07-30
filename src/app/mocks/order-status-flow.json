@@ -1,7 +1,7 @@
 {
   "id": "order-status-flow",
   "name": "Order Status Tracking", 
-  "keywords": ["Track order status", "track_order", "order status", "PO-2024-001234", "status", "track order"],
+  "keywords": ["Track order status", "track_order", "order status", "PO-2025-001234", "status", "track order"],
   "messages": [
     {
       "type": "chip",
@@ -9,7 +9,7 @@
         "label": "Planning",
         "status": "info",
         "icon": "Lightbulb",
-        "content": "Perfect! The user wants to track the status of their recent order. I need to retrieve comprehensive tracking information for PO-2024-001234 from multiple integrated systems: Oracle Fusion Procurement for order details, TechFlow Industries tracking system for supplier status, and SwiftCargo Logistics for shipping logistics. This will give us complete visibility into the current order progress and delivery timeline."
+        "content": "Perfect! The user wants to track the status of their recent order. I need to retrieve comprehensive tracking information for PO-2025-001234 from multiple integrated systems: Oracle Fusion Procurement for order details, TechFlow Industries tracking system for supplier status, and SwiftCargo Logistics for shipping logistics. This will give us complete visibility into the current order progress and delivery timeline."
       },
       "delay": 120
     },
@@ -24,8 +24,8 @@
           "function": "getMultiSystemOrderStatus",
           "endpoint": "/integration/tracking/api/v1/status/comprehensive",
           "parameters": {
-            "orderNumber": "PO-2024-001234",
-            "trackingNumber": "TFI-78945612",
+            "orderNumber": "PO-2025-001234",
+            "trackingNumber": "TFI-2025-78945612",
             "systems": [
               {
                 "name": "Oracle Fusion Procurement",
@@ -57,20 +57,20 @@
         "content": {
           "response": {
             "status": "success",
-            "timestamp": "2024-12-04T14:36:15Z",
-            "orderId": "PO-2024-001234",
+            "timestamp": "2025-07-30T10:19:15Z",
+            "orderId": "PO-2025-001234",
             "orderStatus": {
               "currentStatus": "In Production",
               "progress": "75%",
-              "estimatedDelivery": "2024-12-10",
+              "estimatedDelivery": "2025-08-05",
               "supplier": "TechFlow Industries",
-              "trackingNumber": "TF2024-HD2024-789",
+              "trackingNumber": "TF2025-HD2024-789",
               "lastUpdate": "Production completed, packaging in progress"
             },
             "timeline": [
-              {"date": "2024-12-01", "status": "Order Confirmed"},
-              {"date": "2024-12-03", "status": "Production Started"},
-              {"date": "2024-12-04", "status": "In Production"}
+              {"date": "2025-07-28", "status": "Order Confirmed"},
+              {"date": "2025-07-29", "status": "Production Started"},
+              {"date": "2025-07-30", "status": "In Production"}
             ]
           }
         }
@@ -80,12 +80,12 @@
     {
       "type": "agent_state",
       "agentStateData": {
-        "orderNumber": "PO-2024-001234",
+        "orderNumber": "PO-2025-001234",
         "currentStatus": "In Transit",
-        "lastUpdate": "2024-02-18 14:30 GMT",
+        "lastUpdate": "2025-07-30 10:19 GMT",
         "trackingNumber": "TFI-78945612",
         "carrier": "SwiftCargo Logistics",
-        "estimatedDelivery": "2024-02-20 10:00 AM"
+        "estimatedDelivery": "2025-08-05 10:00 AM"
       },
       "delay": 80
     },
@@ -95,14 +95,14 @@
         "label": "Planning",
         "status": "info",
         "icon": "Lightbulb",
-        "content": "Excellent! I've gathered complete tracking information from all integrated systems. Order PO-2024-001234 is currently in transit with SwiftCargo Logistics using tracking number TFI-78945612. The last update was today at 14:30 GMT which is very recent and shows the shipment is progressing normally. Everything is on schedule for delivery tomorrow, February 20th at 10:00 AM. There are no delays or issues reported. I can provide a comprehensive status update with visual progress tracking."
+        "content": "Excellent! I've gathered complete tracking information from all integrated systems. Order PO-2025-001234 is currently in production at TechFlow Industries with tracking number TFI-2025-78945612. The last update was today at 10:19 GMT which is very recent and shows the order is progressing normally. Everything is on schedule for delivery on August 5th at 10:00 AM. There are no delays or issues reported. I can provide a comprehensive status update with visual progress tracking."
       },
       "delay": 100
     },
     {
       "type": "process_diagram",
       "processData": {
-        "title": "Order Progress - PO-2024-001234",
+        "title": "Order Progress - PO-2025-001234",
         "currentStep": "Processing",
         "steps": [
           { "name": "Order Placed", "label": "Order Placed" },
@@ -112,7 +112,7 @@
           { "name": "Delivered", "label": "Delivered" }
         ],
         "orderInfo": {
-          "orderNumber": "PO-2024-001234",
+          "orderNumber": "PO-2025-001234",
           "supplier": "TechFlow Industries",
           "orderValue": "$2,970",
           "tracking": "TFI-78945612",
@@ -125,7 +125,7 @@
     },
     {
       "type": "text",
-      "content": "Your order **PO-2024-001234** is currently being **processed by TechFlow Industries**. Based on our data analysis, this supplier typically takes around **4.2 days** to complete processing for similar orders, and they have an excellent track record with a **98% on-time delivery rate**.\n\nThe order value is **$2,970** with tracking number **TFI-78945612**. Based on historical patterns and current processing times, delivery is expected on **February 20th at 10:00 AM** as scheduled.",
+      "content": "Your order **PO-2025-001234** is currently being **processed by TechFlow Industries**. Based on our data analysis, this supplier typically takes around **4.2 days** to complete processing for similar orders, and they have an excellent track record with a **98% on-time delivery rate**.\n\nThe order value is **$2,970** with tracking number **TFI-2025-78945612**. Based on historical patterns and current processing times, delivery is expected on **August 5th at 10:00 AM** as scheduled.",
       "delay": 50
     }
   ]

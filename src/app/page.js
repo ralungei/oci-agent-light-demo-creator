@@ -593,9 +593,9 @@ export default function Home() {
                     <Stack spacing={0.8}>
                       {[
                         "Production line motor replacement",
-                        "Conveyor belt parts urgent",
+                        "Transport belt parts urgent",
+                        "Generate contract for new supplier",
                         "Heavy duty pump specifications",
-                        "Emergency hydraulic components",
                         "Maintenance parts inventory",
                         "Critical bearing availability check",
                       ].map((chat, index) => (

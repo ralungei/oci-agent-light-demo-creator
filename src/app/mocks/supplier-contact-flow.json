@@ -2,7 +2,7 @@
   "id": "supplier-contact-flow",
   "name": "GlobalTech Solutionsontact and Quote Requests",
   "keywords": [
-    "Request quotes from all 3 suppliers",
+    "Ask all 3 suppliers for their prices",
     "request_quotes",
     "contact suppliers",
     "quotes",
@@ -136,7 +136,7 @@
           "emailStatus": "Delivered successfully",
           "method": "SMTP Email",
           "expectedResponse": "24-48 hours (manual review)",
-          "trackingId": "EMAIL-GP-20240215-001"
+          "trackingId": "EMAIL-GP-20250730-001"
         }
       },
       "delay": 100

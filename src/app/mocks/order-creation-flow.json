@@ -1,7 +1,13 @@
 {
-  "id": "order-creation-flow", 
+  "id": "order-creation-flow",
   "name": "Purchase Order Creation",
-  "keywords": ["Create order with TechFlow Industries ($2,970)", "create_order_techparts", "create order", "purchase order", "TechFlow Industries"],
+  "keywords": [
+    "Create order with TechFlow Industries ($2,970)",
+    "create_order_techparts",
+    "create order",
+    "purchase order",
+    "TechFlow Industries"
+  ],
   "messages": [
     {
       "type": "chip",
@@ -45,7 +51,7 @@
             },
             "totalAmount": 2970,
             "approvalRequired": false,
-            "budgetCode": "PROD-MAINT-2024"
+            "budgetCode": "PROD-MAINT-2025"
           }
         }
       },
@@ -60,8 +66,8 @@
         "content": {
           "response": {
             "status": "success",
-            "timestamp": "2024-12-04T14:35:22Z",
-            "orderId": "ORD-2024-001247",
+            "timestamp": "2025-07-30T10:18:22Z",
+            "orderId": "ORD-2025-001247",
             "validation": {
               "paymentTerms": "Net 30",
               "approvalStatus": "Auto-approved",
@@ -123,7 +129,7 @@
           "function": "getOrderTrackingDetails",
           "endpoint": "/fusion/procurement/api/v1/orders/tracking",
           "parameters": {
-            "orderNumber": "PO-2024-001234",
+            "orderNumber": "PO-2025-001234",
             "includeDeliverySchedule": true,
             "includeSupplierStatus": true,
             "includeShippingDetails": true,
@@ -142,19 +148,19 @@
         "content": {
           "response": {
             "status": "success",
-            "timestamp": "2024-12-04T14:35:45Z",
+            "timestamp": "2025-07-30T10:18:45Z",
             "orderConfirmation": {
-              "orderId": "PO-2024-001234",
+              "orderId": "PO-2025-001234",
               "status": "confirmed",
               "supplierAcknowledged": true,
-              "estimatedDelivery": "2024-12-10",
+              "estimatedDelivery": "2025-08-05",
               "trackingEnabled": true,
               "notificationsActive": true
             },
             "timeline": {
-              "orderSubmitted": "2024-12-04T14:35:22Z",
-              "supplierNotified": "2024-12-04T14:35:45Z",
-              "expectedAcknowledgment": "2024-12-05T09:00:00Z"
+              "orderSubmitted": "2025-07-30T10:18:22Z",
+              "supplierNotified": "2025-07-30T10:18:45Z",
+              "expectedAcknowledgment": "2025-07-31T09:00:00Z"
             }
           }
         }
@@ -164,15 +170,15 @@
     {
       "type": "agent_state",
       "agentStateData": {
-        "orderNumber": "PO-2024-001234",
+        "orderNumber": "PO-2025-001234",
         "system": "Oracle Fusion Procurement",
         "supplier": "TechFlow Industries",
         "total": "$2,970",
-        "estimatedDelivery": "2024-02-20",
+        "estimatedDelivery": "2025-08-05",
         "status": "Confirmed",
         "trackingInfo": {
-          "orderDate": "2024-02-15",
-          "expectedShipDate": "2024-02-17",
+          "orderDate": "2025-07-30",
+          "expectedShipDate": "2025-08-01",
           "deliveryAddress": "Meridian Industrial Complex - Building A"
         }
       },
@@ -184,14 +190,14 @@
         "label": "Planning",
         "status": "info",
         "icon": "Lightbulb",
-        "content": "Excellent! The order has been successfully created with PO number PO-2024-001234 and all tracking information is now in place. Delivery is scheduled for February 20th to the Production Facility in Building A. The order date is confirmed as February 15th with expected ship date of February 17th. All systems are synchronized and email notifications will be sent. The complete procurement process is now finished."
+        "content": "Excellent! The order has been successfully created with PO number PO-2025-001234 and all tracking information is now in place. Delivery is scheduled for August 5th to the Production Facility in Building A. The order date is confirmed as July 30th with expected ship date of August 1st. All systems are synchronized and email notifications will be sent. The complete procurement process is now finished."
       },
       "delay": 100
     },
     {
       "type": "text",
-      "content": "Perfect! I've successfully created your purchase order. The system processed everything in just 45 seconds and since the total is under $5,000, it was automatically approved without requiring additional authorization.\n\n**Order Details:**\n- **PO Number:** PO-2024-001234\n- **Part:** HD-2024 motor (15HP, 380V)\n- **Total:** $2,970 ($2,850 + $120 shipping)\n- **Supplier:** TechFlow Industries\n\n**Timeline:**\n- **Order placed:** Feb 15, 09:47 GMT\n- **Expected ship:** Feb 17\n- **Delivery:** Feb 20 to Building A\n\nThe supplier has been notified and you should receive email confirmation shortly. Budget validation passed for PROD-MAINT-2024, and tracking updates are now enabled for this order.",
-      "delay": 50
+      "content": "Perfect! I've successfully created your purchase order. The system processed everything in just 45 seconds and since the total is under $5,000, it was automatically approved without requiring additional authorization.\n\n**Order Details:**\n- **PO Number:** PO-2025-001234\n- **Part:** HD-2024 motor (15HP, 380V)\n- **Total:** $2,970 ($2,850 + $120 shipping)\n- **Supplier:** TechFlow Industries\n\n**Timeline:**\n- **Order placed:** Jul 30, 10:18 GMT\n- **Expected ship:** Aug 1\n- **Delivery:** Aug 5 to Building A\n\nThe supplier has been notified and you should receive email confirmation shortly. Budget validation passed for PROD-MAINT-2025, and tracking updates are now enabled for this order.",
+      "delay": 120
     },
     {
       "type": "interactive",
@@ -199,14 +205,14 @@
         "inputType": "choice",
         "title": "What would you like to do next?",
         "options": [
-          { 
-            "value": "track_order", 
-            "label": "Track order status", 
+          {
+            "value": "track_order",
+            "label": "Track order status",
             "type": "action"
           }
         ]
       },
-      "delay": 30
+      "delay": 130
     }
   ]
 }

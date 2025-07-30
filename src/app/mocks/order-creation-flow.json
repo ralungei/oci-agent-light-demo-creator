@@ -1,12 +1,8 @@
 {
   "id": "order-creation-flow",
   "name": "Purchase Order Creation",
-  "keywords": [
-    "Create order with TechFlow Industries ($2,970)",
-    "create_order_techparts",
-    "create order",
-    "purchase order",
-    "TechFlow Industries"
+  "triggerPhrases": [
+    "Create order with TechParts Inc ($2,970)"
   ],
   "messages": [
     {
@@ -15,7 +11,7 @@
         "label": "Planning",
         "status": "info",
         "icon": "Lightbulb",
-        "content": "Excellent! The user has approved creating a purchase order with TechFlow Industries for $2,970 total. I need to process this through Oracle Fusion Procurement Cloud. This includes: generating PO number, validating supplier details (TechFlow Industries as vendor TECH001), applying Net 30 payment terms, setting delivery to ADNOC Production Facility, and checking if approval is required. Since the total is under $5,000, it should auto-approve."
+        "content": "Excellent! The user has approved creating a purchase order with TechParts Inc for $2,970 total. I need to process this through Oracle Fusion Procurement Cloud. This includes: generating PO number, validating supplier details (TechParts Inc as vendor TECH001), applying Net 30 payment terms, setting delivery to ADNOC Production Facility, and checking if approval is required. Since the total is under $5,000, it should auto-approve."
       },
       "delay": 120
     },
@@ -32,7 +28,7 @@
           "parameters": {
             "supplier": {
               "vendorId": "TECH001",
-              "name": "TechFlow Industries",
+              "name": "TechParts Inc",
               "paymentTerms": "Net 30"
             },
             "orderItems": [
@@ -40,12 +36,12 @@
                 "partNumber": "HD-2024",
                 "description": "Heavy-duty conveyor belt motor (15HP, 380V)",
                 "quantity": 1,
-                "unitPrice": 2850,
-                "lineTotal": 2850
+                "unitPrice": 2750,
+                "lineTotal": 2750
               }
             ],
             "shipping": {
-              "cost": 120,
+              "cost": 220,
               "method": "Standard",
               "address": "Meridian Industrial Complex - Building A"
             },
@@ -67,7 +63,7 @@
           "response": {
             "status": "success",
             "timestamp": "2025-07-30T10:18:22Z",
-            "orderId": "ORD-2025-001247",
+            "orderId": "PO-2025-001234",
             "validation": {
               "paymentTerms": "Net 30",
               "approvalStatus": "Auto-approved",
@@ -89,19 +85,19 @@
           "partNumber": "HD-2024",
           "description": "Heavy-duty conveyor belt motor",
           "quantity": 1,
-          "unitPrice": "$2,850",
-          "shipping": "$120",
+          "unitPrice": "$2,750",
+          "shipping": "$220",
           "tax": "$0 (Tax-exempt)",
           "total": "$2,970"
         },
         "supplier": {
-          "name": "TechFlow Industries",
+          "name": "TechParts Inc",
           "vendorId": "TECH001",
           "paymentTerms": "Net 30",
           "shippingMethod": "Standard"
         },
         "approval": {
-          "required": true,
+          "required": false,
           "status": "auto-approved",
           "reason": "Under $5,000 limit"
         }
@@ -114,7 +110,7 @@
         "label": "Planning",
         "status": "info",
         "icon": "Lightbulb",
-        "content": "Perfect! Oracle Fusion has processed all the order details successfully. The total of $2,970 is under our $5,000 approval threshold so it was auto-approved. TechFlow Industries is verified in our system as vendor TECH001 with Net 30 payment terms. All budget authorizations are confirmed and supplier compliance checks have passed. Now I need to generate the final PO number and send confirmation to the supplier."
+        "content": "Perfect! Oracle Fusion has processed all the order details successfully. The total of $2,970 is under our $5,000 approval threshold so it was auto-approved. TechParts Inc is verified in our system as vendor TECH001 with Net 30 payment terms. All budget authorizations are confirmed and supplier compliance checks have passed. Now I need to generate the final PO number and send confirmation to the supplier."
       },
       "delay": 100
     },
@@ -172,7 +168,7 @@
       "agentStateData": {
         "orderNumber": "PO-2025-001234",
         "system": "Oracle Fusion Procurement",
-        "supplier": "TechFlow Industries",
+        "supplier": "TechParts Inc",
         "total": "$2,970",
         "estimatedDelivery": "2025-08-05",
         "status": "Confirmed",
@@ -196,7 +192,7 @@
     },
     {
       "type": "text",
-      "content": "Perfect! I've successfully created your purchase order. The system processed everything in just 45 seconds and since the total is under $5,000, it was automatically approved without requiring additional authorization.\n\n**Order Details:**\n- **PO Number:** PO-2025-001234\n- **Part:** HD-2024 motor (15HP, 380V)\n- **Total:** $2,970 ($2,850 + $120 shipping)\n- **Supplier:** TechFlow Industries\n\n**Timeline:**\n- **Order placed:** Jul 30, 10:18 GMT\n- **Expected ship:** Aug 1\n- **Delivery:** Aug 5 to Building A\n\nThe supplier has been notified and you should receive email confirmation shortly. Budget validation passed for PROD-MAINT-2025, and tracking updates are now enabled for this order.",
+      "content": "Perfect! I've successfully created your purchase order. The system processed everything in just 45 seconds and since the total is under $5,000, it was automatically approved without requiring additional authorization.\n\n**Order Details:**\n- **PO Number:** PO-2025-001234\n- **Part:** HD-2024 motor (15HP, 380V)\n- **Total:** $2,970 ($2,750 + $220 shipping)\n- **Supplier:** TechParts Inc\n\n**Timeline:**\n- **Order placed:** Jul 30, 10:18 GMT\n- **Expected ship:** Aug 1\n- **Delivery:** Aug 5 to Building A\n\nThe supplier has been notified and you should receive email confirmation shortly. Budget validation passed for PROD-MAINT-2025, and tracking updates are now enabled for this order.",
       "delay": 120
     },
     {
@@ -212,7 +208,7 @@
           }
         ]
       },
-      "delay": 180
+      "delay": 120
     }
   ]
 }

@@ -1,12 +1,8 @@
 {
   "id": "supplier-contact-flow",
-  "name": "GlobalTech Solutionsontact and Quote Requests",
-  "keywords": [
-    "Ask all 3 suppliers for their prices",
-    "request_quotes",
-    "contact suppliers",
-    "quotes",
-    "request quotes"
+  "name": "Supplier Contact and Quote Requests",
+  "triggerPhrases": [
+    "Ask all 3 suppliers for their prices"
   ],
   "messages": [
     {
@@ -15,7 +11,7 @@
         "label": "Planning",
         "status": "info",
         "icon": "Lightbulb",
-        "content": "Excellent! The user wants to request quotes from all 3 qualified suppliers for the HD-2024 motor. I'll use different methods: TechFlow Industries has a fast API integration, IndustrialMax Corp has their procurement API, and GlobalTech Solutions requires email communication (slower response). Each supplier will receive complete specifications, delivery requirements, and urgency level for accurate pricing."
+        "content": "Excellent! The user wants to request quotes from all 3 qualified suppliers for the HD-2024 motor. I'll use different methods: TechParts Inc has a fast API integration, Industrial Motors Co has their procurement API, and GlobalTech Solutions requires email communication (slower response). Each supplier will receive complete specifications, delivery requirements, and urgency level for accurate pricing."
       },
       "delay": 120
     },
@@ -26,7 +22,7 @@
         "status": "warning",
         "icon": "SatelliteDish",
         "content": {
-          "description": "Sending quote request to TechFlow Industries via their direct API integration for HD-2024 motor.",
+          "description": "Sending quote request to TechParts Inc via their direct API integration for HD-2024 motor.",
           "function": "requestTechPartsQuote",
           "endpoint": "https://api.techparts.com/v2/quotes/create",
           "parameters": {
@@ -47,12 +43,12 @@
         "status": "success",
         "icon": "FileSpreadsheet",
         "content": {
-          "supplier": "TechFlow Industries",
+          "supplier": "TechParts Inc",
           "responseTime": "15 minutes",
           "method": "API Integration",
           "quote": {
-            "price": "$2,850",
-            "shipping": "$120",
+            "price": "$2,750",
+            "shipping": "$220",
             "total": "$2,970",
             "delivery": "5 business days",
             "warranty": "24 months"
@@ -68,7 +64,7 @@
         "status": "warning",
         "icon": "SatelliteDish",
         "content": {
-          "description": "Sending quote request to IndustrialMax Corp via their procurement API for HD-2024 motor.",
+          "description": "Sending quote request to Industrial Motors Co via their procurement API for HD-2024 motor.",
           "function": "requestIndustrialSupplyQuote",
           "endpoint": "https://api.industrialsupply.com/procurement/quotes",
           "parameters": {
@@ -89,12 +85,12 @@
         "status": "success",
         "icon": "FileSpreadsheet",
         "content": {
-          "supplier": "IndustrialMax Corp",
+          "supplier": "Industrial Motors Co",
           "responseTime": "8 minutes",
           "method": "API Integration", 
           "quote": {
-            "price": "$3,100",
-            "shipping": "$85",
+            "price": "$2,965",
+            "shipping": "$220",
             "total": "$3,185",
             "delivery": "3 business days",
             "warranty": "18 months"
@@ -148,7 +144,7 @@
         "totalSuppliers": 3,
         "suppliers": [
           {
-            "name": "TechFlow Industries",
+            "name": "TechParts Inc",
             "method": "API",
             "status": "quote_received",
             "apiEndpoint": "https://api.techparts.com/v2/quotes/create",
@@ -157,7 +153,7 @@
             "quote": "$2,970"
           },
           {
-            "name": "IndustrialMax Corp",
+            "name": "Industrial Motors Co",
             "method": "API",
             "status": "quote_received",
             "apiEndpoint": "https://api.industrialsupply.com/procurement/quotes",
@@ -183,7 +179,7 @@
         "label": "Planning",
         "status": "info",
         "icon": "Lightbulb",
-        "content": "Perfect! All supplier contacts completed successfully. TechFlow Industries API responded in 15 minutes with $2,970, IndustrialMax Corp API responded in 8 minutes with $3,185, and GlobalTech Solutions email was sent (awaiting 24-48 hour response). Two API integrations provided immediate quotes while the email method will take longer for manual processing."
+        "content": "Perfect! All supplier contacts completed successfully. TechParts Inc API responded in 15 minutes with $2,970, Industrial Motors Co API responded in 8 minutes with $3,185, and GlobalTech Solutions email was sent (awaiting 24-48 hour response). Two API integrations provided immediate quotes while the email method will take longer for manual processing."
       },
       "delay": 100
     },
@@ -196,13 +192,13 @@
         "titleSize": "small",
         "items": [
           {
-            "supplier": "TechFlow Industries",
+            "supplier": "TechParts Inc",
             "status": "received",
             "responseTime": "Instant (API)",
             "quote": "$2,970"
           },
           {
-            "supplier": "IndustrialMax Corp",
+            "supplier": "Industrial Motors Co",
             "status": "received",
             "responseTime": "Instant (API)",
             "quote": "$3,185"
@@ -219,7 +215,7 @@
     },
     {
       "type": "text",
-      "content": "Excellent! I've successfully contacted all three suppliers using different methods. **TechFlow Industries** and **IndustrialMax Corp** both have API integrations, so I got instant responses from them - **$2,970** and **$3,185** respectively. That's a **$215 difference** between the two API quotes.\n\nFor **GlobalTech Solutions**, I had to send an email since they don't have API integration. They typically respond within 24-48 hours, so we're still waiting on that one.\n\nI now have 2 competitive quotes ready for analysis. We could proceed with comparing these two offers, or if you prefer, we can wait for the third quote to get the complete picture. What would you like to do?",
+      "content": "Excellent! I've successfully contacted all three suppliers using different methods. **TechParts Inc** and **Industrial Motors Co** both have API integrations, so I got instant responses from them - **$2,970** and **$3,185** respectively. That's a **$215 difference** between the two API quotes.\n\nFor **GlobalTech Solutions**, I had to send an email since they don't have API integration. They typically respond within 24-48 hours, so we're still waiting on that one.\n\nI now have 2 competitive quotes ready for analysis. We could proceed with comparing these two offers, or if you prefer, we can wait for the third quote to get the complete picture. What would you like to do?",
       "delay": 50
     },
     {

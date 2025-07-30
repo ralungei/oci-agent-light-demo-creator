@@ -1,7 +1,7 @@
 {
   "id": "order-status-flow",
   "name": "Order Status Tracking", 
-  "keywords": ["Track order status", "track_order", "order status", "PO-2025-001234", "status", "track order"],
+  "triggerPhrases": ["Track order status"],
   "messages": [
     {
       "type": "chip",
@@ -9,7 +9,7 @@
         "label": "Planning",
         "status": "info",
         "icon": "Lightbulb",
-        "content": "Perfect! The user wants to track the status of their recent order. I need to retrieve comprehensive tracking information for PO-2025-001234 from multiple integrated systems: Oracle Fusion Procurement for order details, TechFlow Industries tracking system for supplier status, and SwiftCargo Logistics for shipping logistics. This will give us complete visibility into the current order progress and delivery timeline."
+        "content": "Perfect! The user wants to track the status of their recent order. I need to retrieve comprehensive tracking information for PO-2025-001234 from multiple integrated systems: Oracle Fusion Procurement for order details, TechParts Inc tracking system for supplier status, and SwiftCargo Logistics for shipping logistics. This will give us complete visibility into the current order progress and delivery timeline."
       },
       "delay": 120
     },
@@ -25,14 +25,14 @@
           "endpoint": "/integration/tracking/api/v1/status/comprehensive",
           "parameters": {
             "orderNumber": "PO-2025-001234",
-            "trackingNumber": "TFI-2025-78945612",
+            "trackingNumber": "TF2025-HD2024-789",
             "systems": [
               {
                 "name": "Oracle Fusion Procurement",
                 "endpoint": "/fusion/procurement/api/v1/orders/status"
               },
               {
-                "name": "TechFlow Industries Tracking",
+                "name": "TechParts Inc Tracking",
                 "endpoint": "/suppliers/techparts/api/v1/orders/track"
               },
               {
@@ -63,13 +63,13 @@
               "currentStatus": "In Production",
               "progress": "75%",
               "estimatedDelivery": "2025-08-05",
-              "supplier": "TechFlow Industries",
+              "supplier": "TechParts Inc",
               "trackingNumber": "TF2025-HD2024-789",
               "lastUpdate": "Production completed, packaging in progress"
             },
             "timeline": [
-              {"date": "2025-07-28", "status": "Order Confirmed"},
-              {"date": "2025-07-29", "status": "Production Started"},
+              {"date": "2025-07-30", "status": "Order Confirmed"},
+              {"date": "2025-07-30", "status": "Production Started"},
               {"date": "2025-07-30", "status": "In Production"}
             ]
           }
@@ -81,9 +81,9 @@
       "type": "agent_state",
       "agentStateData": {
         "orderNumber": "PO-2025-001234",
-        "currentStatus": "In Transit",
+        "currentStatus": "In Production",
         "lastUpdate": "2025-07-30 10:19 GMT",
-        "trackingNumber": "TFI-78945612",
+        "trackingNumber": "TF2025-HD2024-789",
         "carrier": "SwiftCargo Logistics",
         "estimatedDelivery": "2025-08-05 10:00 AM"
       },
@@ -95,7 +95,7 @@
         "label": "Planning",
         "status": "info",
         "icon": "Lightbulb",
-        "content": "Excellent! I've gathered complete tracking information from all integrated systems. Order PO-2025-001234 is currently in production at TechFlow Industries with tracking number TFI-2025-78945612. The last update was today at 10:19 GMT which is very recent and shows the order is progressing normally. Everything is on schedule for delivery on August 5th at 10:00 AM. There are no delays or issues reported. I can provide a comprehensive status update with visual progress tracking."
+        "content": "Excellent! I've gathered complete tracking information from all integrated systems. Order PO-2025-001234 is currently in production at TechParts Inc with tracking number TF2025-HD2024-789. The last update was today at 10:19 GMT which is very recent and shows the order is progressing normally. Everything is on schedule for delivery on August 5th at 10:00 AM. There are no delays or issues reported. I can provide a comprehensive status update with visual progress tracking."
       },
       "delay": 100
     },
@@ -113,11 +113,11 @@
         ],
         "orderInfo": {
           "orderNumber": "PO-2025-001234",
-          "supplier": "TechFlow Industries",
+          "supplier": "TechParts Inc",
           "orderValue": "$2,970",
-          "tracking": "TFI-78945612",
+          "tracking": "TF2025-HD2024-789",
           "carrier": "SwiftCargo Logistics",
-          "estimatedDelivery": "Feb 20, 10:00 AM",
+          "estimatedDelivery": "Aug 5, 10:00 AM",
           "deliveryLocation": "Meridian Industrial Complex - Building A"
         }
       },
@@ -125,7 +125,7 @@
     },
     {
       "type": "text",
-      "content": "Your order **PO-2025-001234** is currently being **processed by TechFlow Industries**. Based on our data analysis, this supplier typically takes around **4.2 days** to complete processing for similar orders, and they have an excellent track record with a **98% on-time delivery rate**.\n\nThe order value is **$2,970** with tracking number **TFI-2025-78945612**. Based on historical patterns and current processing times, delivery is expected on **August 5th at 10:00 AM** as scheduled.",
+      "content": "Your order **PO-2025-001234** is currently being **processed by TechParts Inc**. Based on our data analysis, this supplier typically takes around **4.2 days** to complete processing for similar orders, and they have an excellent track record with a **98% on-time delivery rate**.\n\nThe order value is **$2,970** with tracking number **TF2025-HD2024-789**. Based on historical patterns and current processing times, delivery is expected on **August 5th at 10:00 AM** as scheduled.",
       "delay": 50
     }
   ]

@@ -1,7 +1,7 @@
 {
   "id": "part-selection-hd2024",
   "name": "Part Selection - HD-2024 Motor",
-  "keywords": ["HD-2024", "hd_motor_2024"],
+  "triggerPhrases": ["HD-2024 - Heavy-duty conveyor belt motor (15HP, 380V)"],
   "messages": [
     {
       "type": "chip",
@@ -57,7 +57,7 @@
                 "mounting": "Foot-mounted"
               },
               "compatibility": ["Conveyor systems", "Production lines"],
-              "warranty": "3 years",
+              "warranty": "24 months",
               "certifications": ["CE", "UL", "CSA"]
             }
           }
@@ -135,14 +135,14 @@
             "suppliersFound": 3,
             "qualifiedSuppliers": [
               {
-                "name": "TechFlow Industries",
+                "name": "TechParts Inc",
                 "rating": 4.8,
                 "certification": "ISO 9001",
                 "stockStatus": "available",
                 "leadTime": "5 days"
               },
               {
-                "name": "IndustrialMax Corp",
+                "name": "Industrial Motors Co",
                 "rating": 4.6,
                 "certification": "ISO 9001",
                 "stockStatus": "available",
@@ -173,7 +173,7 @@
     },
     {
       "type": "text",
-      "content": "Great choice! You've selected the **HD-2024 motor** (15HP, 380V, 1,750 RPM) with TEFC enclosure and 24-month warranty - perfect match for your production line requirements.\n\n**Available Suppliers:**\n\n**🏢 TechFlow Industries**\n- Rating: ⭐⭐⭐⭐⭐ (4.8/5)\n- Stock: ✅ Available\n- Lead time: 5 days\n- Certifications: ISO 9001, Authorized HD-2024 dealer\n\n**🏢 IndustrialMax Corp** \n- Rating: ⭐⭐⭐⭐ (4.6/5)\n- Stock: ✅ Available  \n- Lead time: 3 days\n- Certifications: ISO 9001, Authorized HD-2024 dealer\n\n**🏢 PowerTech Solutions**\n- Rating: ⭐⭐⭐⭐ (4.4/5)\n- Stock: ⚠️ Limited availability\n- Lead time: 7 days\n- Certifications: ISO 9001, Authorized HD-2024 dealer\n\nI can request quotes from all 3 suppliers to get you the best price and delivery terms. Would you like me to proceed?",
+      "content": "Great choice! You've selected the **HD-2024 motor** (15HP, 380V, 1,750 RPM) with TEFC enclosure and 24-month warranty - perfect match for your production line requirements.\n\n**Available Suppliers:**\n\n**🏢 TechParts Inc**\n- Rating: ⭐⭐⭐⭐⭐ (4.8/5)\n- Stock: ✅ Available\n- Lead time: 5 days\n- Certifications: ISO 9001, Authorized HD-2024 dealer\n\n**🏢 Industrial Motors Co** \n- Rating: ⭐⭐⭐⭐ (4.6/5)\n- Stock: ✅ Available  \n- Lead time: 3 days\n- Certifications: ISO 9001, Authorized HD-2024 dealer\n\n**🏢 GlobalTech Solutions**\n- Rating: ⭐⭐⭐⭐ (4.4/5)\n- Stock: ⚠️ Limited availability\n- Lead time: 7 days\n- Certifications: ISO 9001, Authorized HD-2024 dealer\n\nI can request quotes from all 3 suppliers to get you the best price and delivery terms. Would you like me to proceed?",
       "delay": 50
     },
     {

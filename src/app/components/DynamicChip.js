@@ -28,6 +28,8 @@ export default function DynamicChip({
         return theme.palette.warning?.main || "#ff9800";
       case "info":
         return theme.palette.info?.main || "#2196f3";
+      case "purple":
+        return "#9c27b0";
       case "success":
       default:
         return theme.palette.success?.main || theme.palette.secondary.main;

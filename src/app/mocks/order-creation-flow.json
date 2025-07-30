@@ -58,11 +58,19 @@
         "status": "success",
         "icon": "FileSpreadsheet",
         "content": {
-          "paymentTerms": "Net 30",
-          "approvalStatus": "Auto-approved (under $5,000)",
-          "budgetValidation": "✅ Budget available",
-          "complianceCheck": "✅ All requirements met",
-          "estimatedProcessTime": "45 seconds"
+          "response": {
+            "status": "success",
+            "timestamp": "2024-12-04T14:35:22Z",
+            "orderId": "ORD-2024-001247",
+            "validation": {
+              "paymentTerms": "Net 30",
+              "approvalStatus": "Auto-approved",
+              "budgetValidation": "approved",
+              "complianceCheck": "passed",
+              "totalAmount": "$2,970"
+            },
+            "processingTime": "0.8 seconds"
+          }
         }
       },
       "delay": 100
@@ -132,15 +140,23 @@
         "status": "success",
         "icon": "FileSpreadsheet",
         "content": {
-          "orderNumber": "PO-2024-001234",
-          "status": "Confirmed & Sent to Supplier",
-          "confirmationTime": "2024-02-15 09:47 GMT",
-          "nextSteps": [
-            "Supplier acknowledgment",
-            "Production scheduling",
-            "Shipping notification",
-            "Delivery tracking"
-          ]
+          "response": {
+            "status": "success",
+            "timestamp": "2024-12-04T14:35:45Z",
+            "orderConfirmation": {
+              "orderId": "PO-2024-001234",
+              "status": "confirmed",
+              "supplierAcknowledged": true,
+              "estimatedDelivery": "2024-12-10",
+              "trackingEnabled": true,
+              "notificationsActive": true
+            },
+            "timeline": {
+              "orderSubmitted": "2024-12-04T14:35:22Z",
+              "supplierNotified": "2024-12-04T14:35:45Z",
+              "expectedAcknowledgment": "2024-12-05T09:00:00Z"
+            }
+          }
         }
       },
       "delay": 100

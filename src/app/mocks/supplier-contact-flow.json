@@ -107,7 +107,7 @@
       "type": "chip",
       "chipData": {
         "label": "Sending Email",
-        "status": "warning",
+        "status": "purple",
         "icon": "Mail",
         "content": {
           "description": "Sending quote request email to GlobalTech Solutions - awaiting manual response from their sales team.",

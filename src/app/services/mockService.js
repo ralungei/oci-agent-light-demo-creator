@@ -1,4 +1,4 @@
-import { Brain, Database, Shield, AlertTriangle, ListTodo, Wrench, ScanEye, Lightbulb, SatelliteDish, FileSpreadsheet } from "lucide-react";
+import { Brain, Database, Shield, AlertTriangle, ListTodo, Wrench, ScanEye, Lightbulb, SatelliteDish, FileSpreadsheet, Mail } from "lucide-react";
 
 // Icon mapping
 const iconMap = {
@@ -11,7 +11,8 @@ const iconMap = {
   "ScanEye": ScanEye,
   "Lightbulb": Lightbulb,
   "SatelliteDish": SatelliteDish,
-  "FileSpreadsheet": FileSpreadsheet
+  "FileSpreadsheet": FileSpreadsheet,
+  "Mail": Mail
 };
 
 // Import all mock files
@@ -44,7 +45,9 @@ const mockFlows = [
 // Context state for tracking interactive flows
 let conversationContext = {
   waitingForChoice: false,
-  lastFlowId: null
+  lastFlowId: null,
+  awaitingFollowUp: false,
+  followUpFlowId: null
 };
 
 /**
@@ -59,6 +62,52 @@ export function getMockFlow(userInput, previousState = null) {
   // Update context if provided
   if (previousState) {
     conversationContext = { ...conversationContext, ...previousState };
+  }
+  
+  // Check if we're awaiting a follow-up response
+  if (conversationContext.awaitingFollowUp && conversationContext.followUpFlowId) {
+    // Find the flow that was waiting for follow-up
+    const previousFlow = mockFlows.find(f => f.id === conversationContext.followUpFlowId);
+    
+    if (previousFlow && previousFlow.followUpKeywords && previousFlow.followUpMessages) {
+      // Check if user input contains any follow-up keywords
+      const hasFollowUpKeyword = previousFlow.followUpKeywords.some(keyword => 
+        input.includes(keyword.toLowerCase())
+      );
+      
+      if (hasFollowUpKeyword) {
+        // Process follow-up messages
+        const processedMessages = previousFlow.followUpMessages.map(message => {
+          if (message.type === "chip" && message.chipData.icon) {
+            return {
+              ...message,
+              chipData: {
+                ...message.chipData,
+                icon: iconMap[message.chipData.icon] || Brain
+              }
+            };
+          }
+          return message;
+        });
+        
+        // Reset follow-up context
+        conversationContext.awaitingFollowUp = false;
+        conversationContext.followUpFlowId = null;
+        
+        // Check if follow-up has interactive elements
+        const hasInteractiveMessage = previousFlow.followUpMessages.some(msg => msg.type === "interactive");
+        if (hasInteractiveMessage) {
+          conversationContext.waitingForChoice = true;
+          conversationContext.lastFlowId = previousFlow.id;
+        }
+        
+        return {
+          ...previousFlow,
+          messages: processedMessages,
+          context: conversationContext
+        };
+      }
+    }
   }
   
   // Find the best matching flow
@@ -80,11 +129,19 @@ export function getMockFlow(userInput, previousState = null) {
   
   // Update context based on selected flow
   const hasInteractiveMessage = bestMatch.messages.some(msg => msg.type === "interactive");
+  const hasFollowUpMessages = bestMatch.followUpKeywords && bestMatch.followUpMessages;
+  
   if (hasInteractiveMessage) {
     conversationContext.waitingForChoice = true;
     conversationContext.lastFlowId = bestMatch.id;
+  } else if (hasFollowUpMessages) {
+    // Set up follow-up context
+    conversationContext.awaitingFollowUp = true;
+    conversationContext.followUpFlowId = bestMatch.id;
+    conversationContext.waitingForChoice = false;
   } else {
     conversationContext.waitingForChoice = false;
+    conversationContext.awaitingFollowUp = false;
   }
   
   // Process the selected flow to replace icon strings with actual components

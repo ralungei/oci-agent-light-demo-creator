@@ -1,7 +1,7 @@
 {
   "id": "part-selection-hd2024",
   "name": "Part Selection - HD-2024 Motor",
-  "keywords": ["HD-2024", "Heavy-duty conveyor belt motor", "15HP", "380V", "hd_motor_2024", "conveyor belt motor"],
+  "keywords": ["HD-2024", "hd_motor_2024"],
   "messages": [
     {
       "type": "chip",
@@ -42,15 +42,25 @@
         "status": "success",
         "icon": "FileSpreadsheet",
         "content": {
-          "dataSource": "Oracle Fusion Product Master",
-          "retrieving": [
-            "Technical specifications",
-            "Compatibility matrix",
-            "Installation requirements",
-            "Warranty information",
-            "Supplier network"
-          ],
-          "loadTime": "0.8 seconds"
+          "response": {
+            "status": "success",
+            "timestamp": "2024-12-04T14:33:25Z",
+            "productId": "HD-2024",
+            "productDetails": {
+              "description": "Heavy-duty conveyor belt motor",
+              "specifications": {
+                "power": "15HP",
+                "voltage": "380V",
+                "rpm": 1750,
+                "enclosure": "TEFC",
+                "efficiency": "91.2%",
+                "mounting": "Foot-mounted"
+              },
+              "compatibility": ["Conveyor systems", "Production lines"],
+              "warranty": "3 years",
+              "certifications": ["CE", "UL", "CSA"]
+            }
+          }
         }
       },
       "delay": 100
@@ -87,7 +97,7 @@
     {
       "type": "chip",
       "chipData": {
-        "label": "Calling Supplier Search API",
+        "label": "Calling Oracle Fusion ERP API",
         "status": "warning",
         "icon": "SatelliteDish",
         "content": {
@@ -112,16 +122,34 @@
         "status": "success",
         "icon": "FileSpreadsheet",
         "content": {
-          "searchCriteria": [
-            "HD-2024 motor authorization",
-            "Industrial equipment supplier",
-            "Quality certification (ISO 9001)",
-            "Geographic proximity to Meridian Industries",
-            "Inventory availability"
-          ],
-          "suppliersEvaluated": 47,
-          "qualified": 3,
-          "evaluationTime": "2.1 seconds"
+          "response": {
+            "status": "success",
+            "timestamp": "2024-12-04T14:33:45Z",
+            "suppliersFound": 3,
+            "qualifiedSuppliers": [
+              {
+                "name": "TechFlow Industries",
+                "rating": 4.8,
+                "certification": "ISO 9001",
+                "stockStatus": "available",
+                "leadTime": "5 days"
+              },
+              {
+                "name": "IndustrialMax Corp",
+                "rating": 4.6,
+                "certification": "ISO 9001",
+                "stockStatus": "available",
+                "leadTime": "3 days"
+              },
+              {
+                "name": "PowerTech Solutions",
+                "rating": 4.4,
+                "certification": "ISO 9001",
+                "stockStatus": "limited",
+                "leadTime": "7 days"
+              }
+            ]
+          }
         }
       },
       "delay": 120
@@ -138,7 +166,7 @@
     },
     {
       "type": "text",
-      "content": "Great choice! You've selected the **HD-2024 motor**. Let me show you the complete specifications for this unit:\n\n**Technical Match:**\n- **15HP power** - perfect for your requirements\n- **380V voltage** - exact specification you need\n- **1,750 RPM** - optimal speed for conveyor applications\n- **TEFC enclosure** - industrial-grade protection\n- **24 months warranty** - excellent coverage\n\n**Availability & Suppliers:**\nI've found **3 qualified suppliers** who have this motor in stock with **5-10 business days** lead time. All suppliers are ISO 9001 certified and authorized HD-2024 dealers.\n\nI can request quotes from all 3 suppliers to get you the best price and delivery terms. Would you like me to proceed with the quote requests?",
+      "content": "Great choice! You've selected the **HD-2024 motor** (15HP, 380V, 1,750 RPM) with TEFC enclosure and 24-month warranty - perfect match for your production line requirements.\n\n**Available Suppliers:**\n\n**🏢 TechFlow Industries**\n- Rating: ⭐⭐⭐⭐⭐ (4.8/5)\n- Stock: ✅ Available\n- Lead time: 5 days\n- Certifications: ISO 9001, Authorized HD-2024 dealer\n\n**🏢 IndustrialMax Corp** \n- Rating: ⭐⭐⭐⭐ (4.6/5)\n- Stock: ✅ Available  \n- Lead time: 3 days\n- Certifications: ISO 9001, Authorized HD-2024 dealer\n\n**🏢 PowerTech Solutions**\n- Rating: ⭐⭐⭐⭐ (4.4/5)\n- Stock: ⚠️ Limited availability\n- Lead time: 7 days\n- Certifications: ISO 9001, Authorized HD-2024 dealer\n\nI can request quotes from all 3 suppliers to get you the best price and delivery terms. Would you like me to proceed?",
       "delay": 50
     },
     {

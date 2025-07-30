@@ -1,7 +1,7 @@
 {
   "id": "parts-search-flow",
   "name": "Parts Search and Selection Flow",
-  "keywords": ["need parts", "production line", "conveyor", "motor", "spare parts", "equipment"],
+  "keywords": ["need parts", "parts for the production line", "spare parts", "equipment"],
   "messages": [
     {
       "type": "chip",
@@ -9,17 +9,25 @@
         "label": "Planning",
         "status": "info",
         "icon": "Lightbulb",
-        "content": {
-          "task": "Production Line Parts Search",
-          "analysisSteps": [
-            "Parse user request for part specifications",
-            "Identify key search terms and filters",
-            "Select appropriate Oracle Fusion ERP catalogs",
-            "Prepare search query optimization"
-          ],
-          "estimatedTime": "2-3 seconds",
-          "confidence": "95%"
-        }
+        "content": "I need more information before searching for parts in Oracle Fusion ERP. Let me ask you some specific questions to find the exact parts you need."
+      },
+      "delay": 100
+    },
+    {
+      "type": "text",
+      "content": "To help you find the right parts for your production line, I need some specifications:\n\n- **What power rating do you need?** (e.g., 10HP, 15HP, 20HP)\n- **What's your voltage requirement?** (e.g., 220V, 380V, 440V)\n- **Is this for continuous or intermittent operation?**\n\nPlease provide these details so I can search for the most suitable parts in our Oracle Fusion ERP catalog.",
+      "delay": 50
+    }
+  ],
+  "followUpKeywords": ["HP", "voltage", "380V", "220V", "440V", "continuous", "intermittent", "15HP", "20HP"],
+  "followUpMessages": [
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Planning",
+        "status": "info",
+        "icon": "Lightbulb",
+        "content": "Perfect! Based on your specifications, I'll now search Oracle Fusion ERP for motors that match your exact requirements."
       },
       "delay": 100
     },
@@ -30,18 +38,18 @@
         "status": "warning",
         "icon": "SatelliteDish",
         "content": {
-          "description": "Searching Oracle Fusion ERP product catalog for heavy-duty conveyor motors matching production line requirements.",
+          "description": "Searching Oracle Fusion ERP product catalog with your precise specifications.",
           "function": "searchProductCatalog",
           "endpoint": "/fusion/erp/api/v1/products/search",
           "parameters": {
             "searchTerms": ["production line", "spare parts", "conveyor motor"],
             "filters": {
               "voltage": "380V",
-              "powerRange": "10-25HP",
+              "powerRange": "15-20HP",
               "category": "Industrial Motors",
               "availability": "in_stock"
             },
-            "maxResults": 50,
+            "maxResults": 5,
             "sortBy": "relevance"
           }
         }
@@ -55,20 +63,85 @@
         "status": "success",
         "icon": "FileSpreadsheet",
         "content": {
-          "system": "Oracle Fusion ERP",
-          "searchQuery": "production line spare parts conveyor motor",
-          "catalogsSearched": [
-            "Industrial Motors Catalog",
-            "Conveyor Systems Parts",
-            "Heavy-Duty Equipment"
-          ],
-          "searchFilters": {
-            "powerRange": "10-25 HP",
-            "voltage": "380V",
-            "application": "Production Line",
-            "availability": "In Stock"
-          },
-          "searchStatus": "Retrieved 2,847 matching products"
+          "response": {
+            "status": "success",
+            "timestamp": "2024-12-04T14:32:18Z",
+            "totalResults": 2,
+            "products": [
+              {
+                "itemId": "HD-2024",
+                "description": "Heavy-duty conveyor belt motor",
+                "specifications": {
+                  "power": "15HP",
+                  "voltage": "380V",
+                  "rpm": 1750,
+                  "enclosure": "TEFC"
+                },
+                "price": "$2,500-$3,200",
+                "availability": "IN_STOCK"
+              },
+              {
+                "itemId": "HD-2025",
+                "description": "Ultra heavy-duty conveyor motor",
+                "specifications": {
+                  "power": "20HP",
+                  "voltage": "380V",
+                  "rpm": 1450,
+                  "enclosure": "TEFC"
+                },
+                "price": "$3,800-$4,500",
+                "availability": "IN_STOCK"
+              }
+            ]
+          }
+        }
+      },
+      "delay": 120
+    },
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Querying RAG Knowledge Base",
+        "status": "warning",
+        "icon": "ScanEye",
+        "content": {
+          "description": "Searching technical documentation for detailed motor specifications and usage recommendations.",
+          "function": "queryRAGDocuments",
+          "endpoint": "/rag/api/v1/documents/search",
+          "parameters": {
+            "partNumbers": ["HD-2024", "HD-2025"],
+            "query": "installation compatibility maintenance requirements use cases operational limits"
+          }
+        }
+      },
+      "delay": 100
+    },
+    {
+      "type": "chip",
+      "chipData": {
+        "label": "Receiving Documentation Chunks",
+        "status": "success",
+        "icon": "FileSpreadsheet",
+        "content": {
+          "response": {
+            "status": "success",
+            "timestamp": "2024-12-04T14:32:35Z",
+            "totalChunks": 6,
+            "relevantDocs": [
+              {
+                "partNumber": "HD-2024",
+                "chunk": "HD-2024 recommended for 8-hour shifts, requires 500hr maintenance intervals, standard mounting sufficient"
+              },
+              {
+                "partNumber": "HD-2025", 
+                "chunk": "HD-2025 supports 24/7 continuous operation, compatible with heavy-duty systems, requires reinforced mounting"
+              },
+              {
+                "partNumber": "HD-2024",
+                "chunk": "Installation guide: HD-2024 needs standard industrial mounting, suitable for moderate loads"
+              }
+            ]
+          }
         }
       },
       "delay": 120
@@ -76,11 +149,11 @@
     {
       "type": "agent_state",
       "agentStateData": {
-        "system": "Oracle Fusion ERP",
-        "catalog": "Product Catalog",
-        "searchTerms": ["production line", "spare parts", "conveyor", "motor"],
-        "status": "searching",
-        "resultsFound": 2847
+        "system": "RAG Knowledge Base",
+        "documents": "Technical Manuals",
+        "searchTerms": ["HD-2024", "HD-2025", "installation", "maintenance"],
+        "status": "analyzing",
+        "chunks": 6
       },
       "delay": 80
     },
@@ -90,13 +163,25 @@
         "label": "Processing Search Results",
         "status": "info",
         "icon": "Lightbulb",
-        "content": "Received 2,847 products from Oracle Fusion ERP. Now I need to filter these results based on the user's production line requirements. Looking for heavy-duty motors with 380V specification and suitable power range. The search returned many options but I should focus on the ones that best match conveyor belt motor applications. I'll select the top 2 candidates that offer the best combination of specifications and availability for the user to choose from."
+        "content": "Analyzing both ERP data and technical documentation. The RAG system found key differences: HD-2024 is designed for 8-hour shifts with standard mounting, while HD-2025 supports 24/7 continuous operation but requires reinforced mounting."
       },
       "delay": 90
     },
     {
       "type": "text",
-      "content": "Perfect! Found exactly what you need\n\nSearch Results:\n- **2,847 products** searched across 3 catalogs\n- **380V motors** in 10-25HP range\n- In stock and production-ready\n\n**2 Perfect Matches:**\n\n**HD-2024 (15HP, 380V)**\n- Best for: Standard production loads\n- Features: TEFC enclosure, industrial-grade\n- Price: **$2,500-$3,200** (most cost-effective)\n\n**HD-2025 (20HP, 380V)**\n- Best for: High-demand environments\n- Features: Ultra heavy-duty, maximum reliability\n- Price: **$3,800-$4,500** (premium performance)\n\nReady to Order:\n- Both 380V compatible ✅\n- Industrial construction ✅\n- **Immediate availability** ✅\n\nWhich power level fits your needs?",
+      "content": "Found **2 matching motors** in **Oracle Fusion ERP**. I researched additional details in **technical manuals**:\n\n**HD-2024 (15HP, 380V)** - $2,500-$3,200\n- ✅ **For 8-hour shifts** (Motor Installation Guide v2.3)\n- ✅ Standard mounting sufficient\n- ✅ Most cost-effective\n\n**HD-2025 (20HP, 380V)** - $3,800-$4,500\n- ✅ **Supports 24/7 continuous operation** (Heavy-Duty Operations Manual)\n- ⚠️ Requires reinforced mounting\n- ✅ Premium performance\n\nBased on your **continuous operation** requirement and the technical documentation, **HD-2025** is recommended. Which would you prefer?",
+      "sources": [
+        {
+          "name": "Motor Installation Guide v2.3",
+          "pages": [12, 18, 24],
+          "url": "/docs/motor-installation-guide-v2.3.pdf"
+        },
+        {
+          "name": "Heavy-Duty Operations Manual", 
+          "pages": [7, 15, 31],
+          "url": "/docs/heavy-duty-operations-manual.pdf"
+        }
+      ],
       "delay": 50
     },
     {

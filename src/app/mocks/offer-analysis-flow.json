@@ -49,15 +49,31 @@
         "status": "success",
         "icon": "FileSpreadsheet",
         "content": {
-          "calculationTypes": [
-            "Total cost analysis",
-            "ROI projections",
-            "Risk assessment scores",
-            "Delivery optimization"
-          ],
-          "processingTime": "3.2 seconds",
-          "dataPoints": 47,
-          "confidenceLevel": "96%"
+          "response": {
+            "status": "success",
+            "timestamp": "2024-12-04T14:34:12Z",
+            "analysisResults": {
+              "totalOffers": 2,
+              "recommendations": [
+                {
+                  "supplier": "TechParts Inc", 
+                  "score": 92,
+                  "totalCost": "$2,970",
+                  "deliveryDays": 5,
+                  "riskLevel": "low"
+                },
+                {
+                  "supplier": "Industrial Motors Co",
+                  "score": 85,
+                  "totalCost": "$3,150", 
+                  "deliveryDays": 7,
+                  "riskLevel": "medium"
+                }
+              ],
+              "bestChoice": "TechParts Inc",
+              "confidenceLevel": "96%"
+            }
+          }
         }
       },
       "delay": 100

@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 
 export default function BlinkingEye({
   isActive = false,
-  blinkIntervals = [6000, 15000, 20000, 8000, 25000, 12000, 30000, 18000],
+  blinkIntervals = [2500, 300, 15000, 20000, 8000, 25000, 12000, 30000, 18000],
   lookDirection = "center",
+  initialOpenDelay = 900,
 }) {
-  const [isOpen, setIsOpen] = useState(true);
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const [hasOpenedOnce, setHasOpenedOnce] = useState(false);
   const [currentIntervalIndex, setCurrentIntervalIndex] = useState(0);
 
   const getPupilPosition = () => {
@@ -18,9 +19,9 @@ export default function BlinkingEye({
       case "down":
         return { x: 60, y: 45 };
       case "left":
-        return { x: 52, y: 40 };
+        return { x: 48, y: 40 };
       case "right":
-        return { x: 68, y: 40 };
+        return { x: 72, y: 40 };
       default:
         return { x: 60, y: 40 };
     }
@@ -29,9 +30,9 @@ export default function BlinkingEye({
   const getIrisTransform = () => {
     switch (lookDirection) {
       case "down":
-        return "scale(1, 0.92)"; // Compress vertically when looking down
+        return "scale(1, 0.92)";
       case "up":
-        return "scale(1, 0.96)"; // Slight compression when looking up
+        return "scale(1, 0.96)";
       default:
         return "scale(1, 1)";
     }
@@ -41,9 +42,9 @@ export default function BlinkingEye({
     const pupil = getPupilPosition();
     switch (lookDirection) {
       case "down":
-        return { x: pupil.x + 3, y: pupil.y - 6 }; // Move reflection up when looking down
+        return { x: pupil.x + 3, y: pupil.y - 6 };
       case "up":
-        return { x: pupil.x + 4, y: pupil.y - 2 }; // Move reflection down when looking up
+        return { x: pupil.x + 4, y: pupil.y - 2 };
       default:
         return { x: pupil.x + 4, y: pupil.y - 4 };
     }
@@ -52,57 +53,45 @@ export default function BlinkingEye({
   const getReflectionOpacity = () => {
     switch (lookDirection) {
       case "down":
-        return 0.6; // Less strong when looking down
+        return 0.6;
       case "up":
-        return 0.9; // Stronger when looking up
+        return 0.9;
       default:
         return 0.8;
     }
   };
 
+  // useEffect 1: Solo para la apertura inicial
   useEffect(() => {
-    if (!isActive) {
-      let timeoutId;
+    if (!isActive && !hasOpenedOnce) {
+      const timeout = setTimeout(() => {
+        setIsOpen(true);
+        setHasOpenedOnce(true);
+      }, initialOpenDelay);
 
-      const scheduleNextBlink = () => {
-        const currentInterval = blinkIntervals[currentIntervalIndex];
-        timeoutId = setTimeout(() => {
-          setIsOpen(false);
-          setTimeout(() => {
-            setIsOpen(true);
-            setCurrentIntervalIndex(
-              (prev) => (prev + 1) % blinkIntervals.length
-            );
-            scheduleNextBlink();
-          }, 150);
-        }, currentInterval);
-      };
-
-      scheduleNextBlink();
-
-      return () => {
-        if (timeoutId) clearTimeout(timeoutId);
-      };
+      return () => clearTimeout(timeout);
     }
-  }, [blinkIntervals, currentIntervalIndex, isActive]);
+  }, [isActive, hasOpenedOnce, initialOpenDelay]);
 
+  // useEffect 2: Solo para el ciclo de parpadeo
   useEffect(() => {
-    if (isActive) {
-      setIsOpen(true);
-      const progressInterval = setInterval(() => {
-        setLoadingProgress((prev) => {
-          if (prev >= 100) {
-            return 0;
-          }
-          return prev + 2;
-        });
-      }, 50);
+    if (!isActive && hasOpenedOnce) {
+      // Esperar el intervalo actual antes de parpadear
+      const blinkTimeout = setTimeout(() => {
+        // Cerrar el ojo
+        setIsOpen(false);
 
-      return () => clearInterval(progressInterval);
-    } else {
-      setLoadingProgress(0);
+        // Reabrir después de 150ms
+        setTimeout(() => {
+          setIsOpen(true);
+          // Avanzar al siguiente intervalo
+          setCurrentIntervalIndex((prev) => (prev + 1) % blinkIntervals.length);
+        }, 150);
+      }, blinkIntervals[currentIntervalIndex]);
+
+      return () => clearTimeout(blinkTimeout);
     }
-  }, [isActive]);
+  }, [isActive, hasOpenedOnce, currentIntervalIndex, blinkIntervals]);
 
   const pupilPos = getPupilPosition();
   const reflectionPos = getReflectionPosition();
@@ -125,134 +114,152 @@ export default function BlinkingEye({
           viewBox="0 0 120 80"
           style={{ transition: "all 150ms ease-in-out" }}
         >
+          <defs>
+            <clipPath id="eyeClip">
+              <motion.path
+                d={
+                  isOpen
+                    ? "M 20 40 Q 35 20, 60 20 T 100 40 Q 85 60, 60 60 T 20 40"
+                    : "M 20 40 Q 35 40, 60 40 T 100 40 Q 85 40, 60 40 T 20 40"
+                }
+                animate={{
+                  d: isOpen
+                    ? "M 20 40 Q 35 20, 60 20 T 100 40 Q 85 60, 60 60 T 20 40"
+                    : "M 20 40 Q 35 40, 60 40 T 100 40 Q 85 40, 60 40 T 20 40",
+                }}
+                transition={{
+                  duration: 0.15,
+                  ease: "easeInOut",
+                }}
+              />
+            </clipPath>
+          </defs>
+
           <motion.path
             d={
               isOpen
-                ? "M 15 40 Q 30 20, 60 20 T 105 40 Q 90 60, 60 60 T 15 40"
-                : "M 15 40 Q 30 40, 60 40 T 105 40 Q 90 40, 60 40 T 15 40"
+                ? "M 20 40 Q 35 20, 60 20 T 100 40 Q 85 60, 60 60 T 20 40"
+                : "M 20 40 Q 35 40, 60 40 T 100 40 Q 85 40, 60 40 T 20 40"
             }
             fill="none"
             stroke="#1a1a1a"
             strokeWidth="2.5"
             strokeLinecap="round"
+            strokeDasharray={!hasOpenedOnce ? 180 : 0}
+            strokeDashoffset={!hasOpenedOnce ? 180 : 0}
             animate={{
               d: isOpen
-                ? "M 15 40 Q 30 20, 60 20 T 105 40 Q 90 60, 60 60 T 15 40"
-                : "M 15 40 Q 30 40, 60 40 T 105 40 Q 90 40, 60 40 T 15 40",
+                ? "M 20 40 Q 35 20, 60 20 T 100 40 Q 85 60, 60 60 T 20 40"
+                : "M 20 40 Q 35 40, 60 40 T 100 40 Q 85 40, 60 40 T 20 40",
+              strokeDashoffset: !hasOpenedOnce ? 0 : 0,
             }}
             transition={{
-              duration: 0.15,
-              ease: "easeInOut",
-              delay: isOpen ? 0.05 : 0,
+              d: {
+                duration: 0.15,
+                ease: "easeInOut",
+                delay: isOpen ? 0.05 : 0,
+              },
+              strokeDashoffset: {
+                duration: 1.5,
+                ease: "easeInOut",
+                delay: 0,
+              },
             }}
           />
 
-          <AnimatePresence>
-            {isOpen && (
-              <>
-                {isActive ? (
-                  <motion.g
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.05 }}
-                  >
-                    <circle
-                      cx="60"
-                      cy="40"
-                      r="18"
-                      fill="none"
-                      stroke="#1a1a1a"
-                      strokeWidth="2.5"
-                    />
+          <g clipPath="url(#eyeClip)">
+            <AnimatePresence>
+              {isOpen && (
+                <motion.g
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <circle
+                    cx="60"
+                    cy="40"
+                    r="18"
+                    fill="none"
+                    stroke="#1a1a1a"
+                    strokeWidth="2.5"
+                  />
 
+                  <g
+                    transform={`translate(${pupilPos.x}, ${pupilPos.y}) ${isActive ? 'scale(1, 1)' : irisTransform} translate(-${pupilPos.x}, -${pupilPos.y})`}
+                  >
                     <motion.circle
                       cx={pupilPos.x}
                       cy={pupilPos.y}
                       r="10"
-                      fill="#2196f3"
-                      animate={{ 
-                        cx: 60, 
-                        cy: 40,
-                        r: [10, 11, 9, 10]
+                      fill="#1a1a1a"
+                      animate={{
+                        cx: isActive ? 60 : pupilPos.x,
+                        cy: isActive ? 40 : pupilPos.y,
+                        fill: isActive ? "#1a1a1a" : "#1a1a1a",
+                        r: isActive ? [10, 11, 9, 10] : 10,
                       }}
                       transition={{
-                        cx: { type: "spring", stiffness: 200, damping: 25, duration: 0.8 },
-                        cy: { type: "spring", stiffness: 200, damping: 25, duration: 0.8 },
-                        r: { duration: 2.5, ease: "easeInOut", repeat: Infinity }
-                      }}
-                    />
-
-                    <motion.circle
-                      cx={reflectionPos.x}
-                      cy={reflectionPos.y}
-                      r="2.5"
-                      fill="#fff"
-                      animate={{ 
-                        cx: 64,
-                        cy: 36,
-                        opacity: [0.3, 1, 0.3]
-                      }}
-                      transition={{ 
-                        cx: { type: "spring", stiffness: 200, damping: 25, duration: 0.8 },
-                        cy: { type: "spring", stiffness: 200, damping: 25, duration: 0.8 },
-                        opacity: { duration: 1.5, ease: "easeInOut", repeat: Infinity }
-                      }}
-                    />
-                  </motion.g>
-                ) : (
-                  <motion.g
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    <circle
-                      cx="60"
-                      cy="40"
-                      r="18"
-                      fill="none"
-                      stroke="#1a1a1a"
-                      strokeWidth="2.5"
-                    />
-
-                    <g transform={`translate(${pupilPos.x}, ${pupilPos.y}) ${irisTransform} translate(-${pupilPos.x}, -${pupilPos.y})`}>
-                      <motion.circle
-                        cx={pupilPos.x}
-                        cy={pupilPos.y}
-                        r="10"
-                        fill="#1a1a1a"
-                        animate={{ cx: pupilPos.x, cy: pupilPos.y }}
-                        transition={{
+                        cx: {
                           type: "spring",
-                          stiffness: 300,
-                          damping: 30,
-                        }}
-                      />
-                    </g>
-
-                    <motion.circle
-                      cx={reflectionPos.x}
-                      cy={reflectionPos.y}
-                      r="2.5"
-                      fill="#fff"
-                      opacity={reflectionOpacity}
-                      animate={{ 
-                        cx: reflectionPos.x, 
-                        cy: reflectionPos.y,
-                        opacity: reflectionOpacity
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 30,
+                          stiffness: isActive ? 200 : 300,
+                          damping: isActive ? 25 : 30,
+                          duration: isActive ? 0.8 : 0.6,
+                        },
+                        cy: {
+                          type: "spring",
+                          stiffness: isActive ? 200 : 300,
+                          damping: isActive ? 25 : 30,
+                          duration: isActive ? 0.8 : 0.6,
+                        },
+                        fill: {
+                          duration: 0.4,
+                          ease: "easeInOut",
+                        },
+                        r: {
+                          duration: isActive ? 2.5 : 0.3,
+                          ease: "easeInOut",
+                          repeat: isActive ? Infinity : 0,
+                        },
                       }}
                     />
-                  </motion.g>
-                )}
-              </>
-            )}
-          </AnimatePresence>
+                  </g>
+
+                  <motion.circle
+                    cx={reflectionPos.x}
+                    cy={reflectionPos.y}
+                    r="2.5"
+                    fill="#fff"
+                    opacity={reflectionOpacity}
+                    animate={{
+                      cx: isActive ? 64 : reflectionPos.x,
+                      cy: isActive ? 36 : reflectionPos.y,
+                      opacity: isActive ? [0.3, 1, 0.3] : reflectionOpacity,
+                    }}
+                    transition={{
+                      cx: {
+                        type: "spring",
+                        stiffness: isActive ? 200 : 300,
+                        damping: isActive ? 25 : 30,
+                        duration: isActive ? 0.8 : 0.6,
+                      },
+                      cy: {
+                        type: "spring",
+                        stiffness: isActive ? 200 : 300,
+                        damping: isActive ? 25 : 30,
+                        duration: isActive ? 0.8 : 0.6,
+                      },
+                      opacity: {
+                        duration: isActive ? 1.5 : 0.4,
+                        ease: "easeInOut",
+                        repeat: isActive ? Infinity : 0,
+                      },
+                    }}
+                  />
+                </motion.g>
+              )}
+            </AnimatePresence>
+          </g>
         </svg>
       </Box>
     </Box>

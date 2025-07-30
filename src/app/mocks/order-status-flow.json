@@ -55,18 +55,24 @@
         "status": "success",
         "icon": "FileSpreadsheet",
         "content": {
-          "dataSources": [
-            "Oracle Fusion Procurement",
-            "TechFlow Industries Tracking API",
-            "SwiftCargo Logistics Logistics",
-            "ADNOC Receiving System"
-          ],
-          "statusTypes": [
-            "Order confirmation",
-            "Production status",
-            "Shipping tracking",
-            "Delivery schedule"
-          ]
+          "response": {
+            "status": "success",
+            "timestamp": "2024-12-04T14:36:15Z",
+            "orderId": "PO-2024-001234",
+            "orderStatus": {
+              "currentStatus": "In Production",
+              "progress": "75%",
+              "estimatedDelivery": "2024-12-10",
+              "supplier": "TechFlow Industries",
+              "trackingNumber": "TF2024-HD2024-789",
+              "lastUpdate": "Production completed, packaging in progress"
+            },
+            "timeline": [
+              {"date": "2024-12-01", "status": "Order Confirmed"},
+              {"date": "2024-12-03", "status": "Production Started"},
+              {"date": "2024-12-04", "status": "In Production"}
+            ]
+          }
         }
       },
       "delay": 100

@@ -30,6 +30,9 @@ import DynamicChip from "./components/DynamicChip";
 import InteractiveChoice from "./components/InteractiveChoice";
 import ProcessDiagram from "./components/ProcessDiagram";
 import ProgressTracker from "./components/ProgressTracker";
+import RadarChart from "./components/RadarChart";
+import ScatterChart from "./components/ScatterChart";
+import CostBenefitChart from "./components/CostBenefitChart";
 import Sources from "./components/Sources";
 import SupplierCard from "./components/SupplierCard";
 import TypingEffect from "./components/TypingEffect";
@@ -163,6 +166,39 @@ export default function Home() {
         groups.push({
           type: "supplier_card",
           supplierData: message.supplierData,
+          messageIndex: index,
+        });
+      } else if (message.type === "radar_chart") {
+        // If we have accumulated chips, add them as a group first
+        if (currentChipGroup.length > 0) {
+          groups.push({ type: "chipRow", chips: currentChipGroup });
+          currentChipGroup = [];
+        }
+        groups.push({
+          type: "radar_chart",
+          radarData: message.radarData,
+          messageIndex: index,
+        });
+      } else if (message.type === "scatter_chart") {
+        // If we have accumulated chips, add them as a group first
+        if (currentChipGroup.length > 0) {
+          groups.push({ type: "chipRow", chips: currentChipGroup });
+          currentChipGroup = [];
+        }
+        groups.push({
+          type: "scatter_chart",
+          scatterData: message.scatterData,
+          messageIndex: index,
+        });
+      } else if (message.type === "cost_benefit_chart") {
+        // If we have accumulated chips, add them as a group first
+        if (currentChipGroup.length > 0) {
+          groups.push({ type: "chipRow", chips: currentChipGroup });
+          currentChipGroup = [];
+        }
+        groups.push({
+          type: "cost_benefit_chart",
+          costBenefitData: message.costBenefitData,
           messageIndex: index,
         });
       }
@@ -906,6 +942,27 @@ export default function Home() {
 
                     {group.type === "supplier_card" && (
                       <SupplierCard data={group.supplierData} />
+                    )}
+
+                    {group.type === "radar_chart" && (
+                      <RadarChart 
+                        data={group.radarData} 
+                        title={group.radarData?.title}
+                      />
+                    )}
+
+                    {group.type === "scatter_chart" && (
+                      <ScatterChart 
+                        data={group.scatterData} 
+                        title={group.scatterData?.title}
+                      />
+                    )}
+
+                    {group.type === "cost_benefit_chart" && (
+                      <CostBenefitChart 
+                        data={group.costBenefitData} 
+                        title={group.costBenefitData?.title}
+                      />
                     )}
                   </Box>
                 ))}

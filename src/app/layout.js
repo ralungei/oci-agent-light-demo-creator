@@ -18,6 +18,7 @@ const exo2 = Exo_2({
   variable: "--font-exo2",
 });
 
+
 export const metadata = {
   title: "OCI Generative AI Agents",
   description: "Chat with our AI assistant",

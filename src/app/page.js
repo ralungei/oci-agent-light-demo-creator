@@ -23,7 +23,7 @@ import {
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import AnalogClock from "./components/AnalogClock";
+import Image from "next/image";
 import ComparisonTable from "./components/ComparisonTable";
 import DustText from "./components/DustText";
 import DynamicChip from "./components/DynamicChip";
@@ -446,13 +446,65 @@ export default function Home() {
           <Box
             sx={{
               display: "flex",
+              flexDirection: "column",
               justifyContent: "flex-start",
               mb: 2,
-              height: "40px",
-              alignItems: "center",
+              minHeight: "120px",
+              alignItems: "flex-start",
+              gap: 1,
             }}
           >
-            <AnalogClock status={showProgress ? "processing" : "idle"} />
+            {/* Oracle Logo */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ 
+                duration: 0.8, 
+                delay: 0.1,
+                ease: [0.25, 0.46, 0.45, 0.94] 
+              }}
+            >
+              <Image
+                src="/oracle-logo.png"
+                alt="Oracle Logo"
+                width={100}
+                height={50}
+                style={{ 
+                  objectFit: "contain",
+                  userSelect: "none"
+                }}
+              />
+            </motion.div>
+
+            {/* Oracle AI Title */}
+            <motion.div
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ 
+                duration: 0.8, 
+                delay: 0.2,
+                ease: [0.25, 0.46, 0.45, 0.94] 
+              }}
+            >
+              <Typography
+                variant="h1"
+                sx={{
+                  fontSize: { xs: "1.2rem", sm: "1.4rem", md: "1.6rem" },
+                  fontWeight: 300,
+                  color: "#1a1a1a",
+                  letterSpacing: "0.02em",
+                  textAlign: "left",
+                  fontFamily: "'Oracle Sans', sans-serif",
+                  background: "linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  userSelect: "none",
+                }}
+              >
+                <Box component="span" sx={{ fontWeight: 600 }}>Oracle</Box> AI for Business
+              </Typography>
+            </motion.div>
           </Box>
           <Box sx={{ minHeight: "100px" }}>
             <TypingEffect text="Hey," speed={50}>

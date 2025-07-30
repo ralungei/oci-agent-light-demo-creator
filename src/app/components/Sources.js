@@ -1,20 +1,30 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { motion } from "framer-motion";
 import { FileText } from "lucide-react";
 
-export default function Sources({ sources }) {
+export default function Sources({ sources, delay = 0 }) {
   if (!sources || sources.length === 0) {
     return null;
   }
 
   return (
-    <Box 
-      sx={{ 
-        mt: 2, 
-        pt: 2, 
-        borderTop: "1px solid #e0e0e0",
-        textAlign: "left" // Align to the left
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ 
+        duration: 0.5, 
+        delay: delay,
+        ease: "easeOut" 
       }}
     >
+      <Box 
+        sx={{ 
+          mb: 2, 
+          pb: 2, 
+          borderBottom: "1px solid #e0e0e0",
+          textAlign: "left"
+        }}
+      >
       <Typography 
         variant="subtitle2" 
         sx={{ 
@@ -45,6 +55,7 @@ export default function Sources({ sources }) {
           </Box>
         ))}
       </Stack>
-    </Box>
+      </Box>
+    </motion.div>
   );
 }

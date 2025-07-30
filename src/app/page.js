@@ -3,7 +3,6 @@
 import { Close as CloseIcon, KeyboardReturn } from "@mui/icons-material";
 import {
   Box,
-  Button,
   Collapse,
   IconButton,
   Paper,
@@ -15,20 +14,20 @@ import JsonView from "@uiw/react-json-view";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircle,
-  ArrowRight,
   CheckCircle,
   Circle,
   Package,
   Play,
   Settings,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import AnalogClock from "./components/AnalogClock";
 import ComparisonTable from "./components/ComparisonTable";
 import DustText from "./components/DustText";
 import DynamicChip from "./components/DynamicChip";
+import InteractiveChoice from "./components/InteractiveChoice";
 import ProcessDiagram from "./components/ProcessDiagram";
 import ProgressTracker from "./components/ProgressTracker";
 import Sources from "./components/Sources";
@@ -62,7 +61,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [agentStates, setAgentStates] = useState([]);
   const [genaiService, setGenaiService] = useState(null);
-  
+
   // Current conversation state
   const [activeChips, setActiveChips] = useState({});
   const [displayChips, setDisplayChips] = useState({});
@@ -74,14 +73,13 @@ export default function Home() {
   const [typingTimer, setTypingTimer] = useState(null);
   const [activeSimulation, setActiveSimulation] = useState(null);
   const [isSimulationActive, setIsSimulationActive] = useState(false);
-  
 
   useEffect(() => {
     setGenaiService(createGenaiAgentService());
     // Show text field after welcome animation completes
     const timer = setTimeout(() => {
       setShowTextField(true);
-    }, 600); // Hey (200ms) + delay (200ms) + Welcome back! (200ms)
+    }, 200);
 
     return () => {
       clearTimeout(timer);
@@ -89,9 +87,6 @@ export default function Home() {
       cleanupActiveProcesses();
     };
   }, []);
-
-
-
 
   // Group messages into chip rows, text blocks, and interactive elements
   const groupMessages = (messages) => {
@@ -203,8 +198,7 @@ export default function Home() {
           const newMessages = [...prev, message];
           const newGroupedElements = groupMessages(newMessages);
           setGroupedElements(newGroupedElements);
-          
-          
+
           return newMessages;
         });
 
@@ -221,7 +215,7 @@ export default function Home() {
               setShowProgress(false);
               setIsSimulationActive(false);
             }
-          }, 2000);
+          }, 1000);
           timeouts.push(finalTimeout);
         }
       }
@@ -235,10 +229,10 @@ export default function Home() {
     const simulation = {
       cancel: () => {
         cancelled = true;
-        timeouts.forEach(timeout => clearTimeout(timeout));
+        timeouts.forEach((timeout) => clearTimeout(timeout));
         setShowProgress(false);
         setIsSimulationActive(false);
-      }
+      },
     };
 
     setActiveSimulation(simulation);
@@ -317,7 +311,6 @@ export default function Home() {
     }
   };
 
-
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -343,12 +336,11 @@ export default function Home() {
     }
   };
 
-
   // Handle interactive option selection
   const handleOptionSelect = (optionLabel) => {
     // Block if simulation active
     if (isSimulationActive) return;
-    
+
     // Directly trigger the submission process without filling the text field
     setSubmittedMessage(optionLabel);
     setAgentStates([{ trace: "connecting" }]);
@@ -424,9 +416,7 @@ export default function Home() {
               alignItems: "center",
             }}
           >
-            <AnalogClock
-              status={showProgress ? "processing" : "idle"}
-            />
+            <AnalogClock status={showProgress ? "processing" : "idle"} />
           </Box>
           <Box sx={{ minHeight: "100px" }}>
             <TypingEffect text="Hey," speed={50}>
@@ -877,74 +867,28 @@ export default function Home() {
                           },
                         }}
                       >
-                        <TypingEffect text={group.content} speed={TYPING_SPEED}>
-                          {(displayedText) => (
-                            <>
+                        <>
+                          <Sources sources={group.sources} delay={0.2} />
+                          <TypingEffect
+                            text={group.content}
+                            speed={TYPING_SPEED}
+                          >
+                            {(displayedText) => (
                               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                 {displayedText}
                               </ReactMarkdown>
-                              <Sources sources={group.sources} />
-                            </>
-                          )}
-                        </TypingEffect>
+                            )}
+                          </TypingEffect>
+                        </>
                       </Box>
                     )}
 
                     {group.type === "interactive" && (
                       <Box sx={{ mt: 3, mb: 3 }}>
-                        {group.interactiveData.inputType === "choice" && (
-                          <Stack
-                            direction="column"
-                            spacing={1.5}
-                            alignItems="flex-start"
-                          >
-                            {group.interactiveData.options.map(
-                              (option, optionIndex) => (
-                                <Button
-                                  key={optionIndex}
-                                  variant="outlined"
-                                  size="large"
-                                  onClick={() =>
-                                    handleOptionSelect(option.label)
-                                  }
-                                  sx={{
-                                    textAlign: "left",
-                                    justifyContent: "flex-start",
-                                    padding: "12px 20px",
-                                    fontSize: "1.1rem",
-                                    fontWeight: 400,
-                                    textTransform: "none",
-                                    border: "1px solid rgba(0, 0, 0, 0.2)",
-                                    color: "rgba(0, 0, 0, 0.8)",
-                                    backgroundColor: "white",
-                                    borderRadius: "18px 18px 18px 4px",
-                                    transition: "all 0.2s ease-in-out",
-                                    width: "fit-content",
-                                    "&:hover": {
-                                      backgroundColor: "#f8f8f8",
-                                      transform: "translateX(4px) scale(1.02)",
-                                      borderColor: "rgba(0, 0, 0, 0.3)",
-                                      fontWeight: 600,
-                                    },
-                                    "& .MuiButton-endIcon": {
-                                      color: "rgba(0, 0, 0, 0.6)",
-                                    },
-                                    "& .MuiButton-startIcon": {
-                                      color: "rgba(0, 0, 0, 0.6)",
-                                    },
-                                  }}
-                                  startIcon={React.createElement(
-                                    getIconByType(option.type),
-                                    { size: 14 }
-                                  )}
-                                  endIcon={<ArrowRight size={16} />}
-                                >
-                                  {option.label}
-                                </Button>
-                              )
-                            )}
-                          </Stack>
-                        )}
+                        <InteractiveChoice
+                          interactiveData={group.interactiveData}
+                          onChoiceSelect={handleOptionSelect}
+                        />
                       </Box>
                     )}
 

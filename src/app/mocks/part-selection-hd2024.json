@@ -78,7 +78,11 @@
           "enclosure": "TEFC",
           "efficiency": "IE3 Premium"
         },
-        "compatibility": ["Conveyor systems", "Production lines", "Material handling"],
+        "compatibility": [
+          "Conveyor systems",
+          "Production lines",
+          "Material handling"
+        ],
         "warranty": "24 months",
         "leadTime": "5-10 business days"
       },
@@ -106,7 +110,10 @@
           "endpoint": "/fusion/erp/api/v1/suppliers/search",
           "parameters": {
             "partNumber": "HD-2024",
-            "requiredCertifications": ["ISO 9001", "Industrial Equipment Authorization"],
+            "requiredCertifications": [
+              "ISO 9001",
+              "Industrial Equipment Authorization"
+            ],
             "inventoryStatus": "in_stock",
             "proximityTo": "Meridian Industries",
             "minQualityRating": 4.0
@@ -173,11 +180,11 @@
       "type": "interactive",
       "interactiveData": {
         "inputType": "choice",
-        "title": "Proceed with Supplier Quotes?",
+        "title": "",
         "options": [
-          { 
-            "value": "request_quotes", 
-            "label": "Request quotes from all 3 suppliers", 
+          {
+            "value": "request_quotes",
+            "label": "Request quotes from all 3 suppliers",
             "type": "action"
           }
         ]

@@ -30,10 +30,10 @@ const AnalogClock = ({ size = 60, status = "idle" }) => {
     if (status === "processing") {
       const interval = setInterval(() => {
         setProcessingRotation((prev) => ({
-          hour: prev.hour + 2,
-          minute: prev.minute + 6,
+          hour: prev.hour + 1,
+          minute: prev.minute + 3,
         }));
-      }, 16);
+      }, 50);
       return () => clearInterval(interval);
     } else {
       setProcessingRotation({ hour: 0, minute: 0 });
@@ -96,6 +96,10 @@ const AnalogClock = ({ size = 60, status = "idle" }) => {
       hourAngle += processingRotation.hour;
       minuteAngle += processingRotation.minute;
     }
+    
+    // Always apply modulo to prevent multiple rotations when transitioning
+    hourAngle = hourAngle % 360;
+    minuteAngle = minuteAngle % 360;
   }
 
   const currentColor = getStatusColor();
@@ -137,21 +141,22 @@ const AnalogClock = ({ size = 60, status = "idle" }) => {
 
         {(status === "idle" || status === "processing") && (
           <>
-            <line
-              x1={center}
-              y1={center}
-              x2={center}
-              y2={center - radius * 0.4}
-              stroke={currentColor}
-              strokeWidth={hourHandWidth}
-              strokeLinecap="round"
-              style={{
-                transformOrigin: `${center}px ${center}px`,
-                transform: `rotate(${hourAngle}deg)`,
-                transition:
-                  status === "processing" ? "none" : "transform 1s ease-out",
-              }}
-            />
+            {status !== "processing" && (
+              <line
+                x1={center}
+                y1={center}
+                x2={center}
+                y2={center - radius * 0.4}
+                stroke={currentColor}
+                strokeWidth={hourHandWidth}
+                strokeLinecap="round"
+                style={{
+                  transformOrigin: `${center}px ${center}px`,
+                  transform: `rotate(${hourAngle}deg)`,
+                  transition: "transform 1s ease-out",
+                }}
+              />
+            )}
 
             <line
               x1={center}

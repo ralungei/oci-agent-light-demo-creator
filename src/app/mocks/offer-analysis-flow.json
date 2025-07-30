@@ -1,7 +1,13 @@
 {
   "id": "offer-analysis-flow",
   "name": "Offer Analysis and Comparison",
-  "keywords": ["Analyze current offers (2 received)", "analyze_current", "analyze offers", "compare quotes", "analyze current"],
+  "keywords": [
+    "Analyze current offers (2 received)",
+    "analyze_current",
+    "analyze offers",
+    "compare quotes",
+    "analyze current"
+  ],
   "messages": [
     {
       "type": "chip",
@@ -26,8 +32,18 @@
           "parameters": {
             "partNumber": "HD-2024",
             "quotes": [
-              {"supplier": "TechFlow Industries", "price": 2850, "delivery": 5, "shipping": 120},
-              {"supplier": "IndustrialMax Corp", "price": 3100, "delivery": 3, "shipping": 85}
+              {
+                "supplier": "TechFlow Industries",
+                "price": 2850,
+                "delivery": 5,
+                "shipping": 120
+              },
+              {
+                "supplier": "IndustrialMax Corp",
+                "price": 3100,
+                "delivery": 3,
+                "shipping": 85
+              }
             ],
             "analysisType": "comprehensive",
             "weightings": {
@@ -56,7 +72,7 @@
               "totalOffers": 2,
               "recommendations": [
                 {
-                  "supplier": "TechParts Inc", 
+                  "supplier": "TechParts Inc",
                   "score": 92,
                   "totalCost": "$2,970",
                   "deliveryDays": 5,
@@ -65,7 +81,7 @@
                 {
                   "supplier": "Industrial Motors Co",
                   "score": 85,
-                  "totalCost": "$3,150", 
+                  "totalCost": "$3,150",
                   "deliveryDays": 7,
                   "riskLevel": "medium"
                 }
@@ -88,14 +104,18 @@
             "savings": "$250 vs average"
           },
           "fastestDelivery": {
-            "supplier": "IndustrialMax Corp", 
+            "supplier": "IndustrialMax Corp",
             "time": "3 days",
             "method": "Express shipping"
           },
           "bestOverall": {
             "supplier": "TechFlow Industries",
             "score": "95/100",
-            "reasons": ["Lowest price", "Good delivery time", "Excellent reputation"]
+            "reasons": [
+              "Lowest price",
+              "Good delivery time",
+              "Excellent reputation"
+            ]
           },
           "totalSavings": "$450 vs highest quote"
         }
@@ -116,7 +136,14 @@
       "type": "comparison_table",
       "comparisonData": {
         "title": "Supplier Quote Comparison - HD-2024 Motor",
-        "columns": ["Supplier", "Price", "Delivery", "Shipping", "Total", "Score"],
+        "columns": [
+          "Supplier",
+          "Price",
+          "Delivery",
+          "Shipping",
+          "Total",
+          "Score"
+        ],
         "rows": [
           {
             "supplier": "TechFlow Industries",
@@ -129,7 +156,7 @@
           },
           {
             "supplier": "IndustrialMax Corp",
-            "price": "$3,100", 
+            "price": "$3,100",
             "delivery": "3 days",
             "shipping": "$85",
             "total": "$3,185",
@@ -140,7 +167,7 @@
             "supplier": "Global Parts Ltd",
             "price": "Pending",
             "delivery": "Unknown",
-            "shipping": "Unknown", 
+            "shipping": "Unknown",
             "total": "Pending",
             "score": "N/A",
             "recommended": false
@@ -158,16 +185,16 @@
       "type": "interactive",
       "interactiveData": {
         "inputType": "choice",
-        "title": "Ready to create purchase order?",
+        "title": "",
         "options": [
-          { 
-            "value": "create_order_techparts", 
-            "label": "Create order with TechFlow Industries ($2,970)", 
+          {
+            "value": "create_order_techparts",
+            "label": "Create order with TechFlow Industries ($2,970)",
             "type": "action"
           }
         ]
       },
-      "delay": 30
+      "delay": 100
     }
   ]
 }

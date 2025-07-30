@@ -1,7 +1,12 @@
 {
   "id": "parts-search-flow",
   "name": "Parts Search and Selection Flow",
-  "keywords": ["need parts", "parts for the production line", "spare parts", "equipment"],
+  "keywords": [
+    "need parts",
+    "parts for the production line",
+    "spare parts",
+    "equipment"
+  ],
   "messages": [
     {
       "type": "chip",
@@ -19,7 +24,17 @@
       "delay": 50
     }
   ],
-  "followUpKeywords": ["HP", "voltage", "380V", "220V", "440V", "continuous", "intermittent", "15HP", "20HP"],
+  "followUpKeywords": [
+    "HP",
+    "voltage",
+    "380V",
+    "220V",
+    "440V",
+    "continuous",
+    "intermittent",
+    "15HP",
+    "20HP"
+  ],
   "followUpMessages": [
     {
       "type": "chip",
@@ -133,7 +148,7 @@
                 "chunk": "HD-2024 recommended for 8-hour shifts, requires 500hr maintenance intervals, standard mounting sufficient"
               },
               {
-                "partNumber": "HD-2025", 
+                "partNumber": "HD-2025",
                 "chunk": "HD-2025 supports 24/7 continuous operation, compatible with heavy-duty systems, requires reinforced mounting"
               },
               {
@@ -177,7 +192,7 @@
           "url": "/docs/motor-installation-guide-v2.3.pdf"
         },
         {
-          "name": "Heavy-Duty Operations Manual", 
+          "name": "Heavy-Duty Operations Manual",
           "pages": [7, 15, 31],
           "url": "/docs/heavy-duty-operations-manual.pdf"
         }
@@ -188,23 +203,23 @@
       "type": "interactive",
       "interactiveData": {
         "inputType": "choice",
-        "title": "Select Part for Detailed Analysis",
+        "title": "",
         "options": [
-          { 
-            "value": "hd_motor_2024", 
-            "label": "HD-2024 - Heavy-duty conveyor belt motor (15HP, 380V)", 
+          {
+            "value": "hd_motor_2024",
+            "label": "HD-2024 - Heavy-duty conveyor belt motor (15HP, 380V)",
             "type": "product",
             "details": "Power: 15HP | Voltage: 380V | RPM: 1750 | Price Range: $2,500-$3,200"
           },
-          { 
-            "value": "hd_motor_2025", 
-            "label": "HD-2025 - Ultra heavy-duty conveyor motor (20HP, 380V)", 
+          {
+            "value": "hd_motor_2025",
+            "label": "HD-2025 - Ultra heavy-duty conveyor motor (20HP, 380V)",
             "type": "product",
             "details": "Power: 20HP | Voltage: 380V | RPM: 1450 | Price Range: $3,800-$4,500"
           }
         ]
       },
-      "delay": 30
+      "delay": 140
     }
   ]
 }

@@ -22,6 +22,8 @@ import defaultMock from '../mocks/default.json';
 // import orderPartsHeavyDuty from '../mocks/order-parts-heavy-duty.json';
 // import orderPartsStandard from '../mocks/order-parts-standard.json';
 import partsSearchFlow from '../mocks/parts-search-flow.json';
+import partsAutonomyFlow from '../mocks/parts-autonomy-flow.json';
+import partsAdvisoryFlow from '../mocks/parts-advisory-flow.json';
 import partSelectionHd2024 from '../mocks/part-selection-hd2024.json';
 import supplierContactFlow from '../mocks/supplier-contact-flow.json';
 import offerAnalysisFlow from '../mocks/offer-analysis-flow.json';
@@ -31,6 +33,8 @@ import orderStatusFlow from '../mocks/order-status-flow.json';
 const mockFlows = [
   // databaseErrors,
   partsSearchFlow,
+  partsAutonomyFlow,
+  partsAdvisoryFlow,
   partSelectionHd2024,
   supplierContactFlow,
   offerAnalysisFlow,
@@ -69,13 +73,13 @@ export function getMockFlow(userInput, previousState = null) {
     // Find the flow that was waiting for follow-up
     const previousFlow = mockFlows.find(f => f.id === conversationContext.followUpFlowId);
     
-    if (previousFlow && previousFlow.followUpKeywords && previousFlow.followUpMessages) {
-      // Check if user input contains any follow-up keywords
-      const hasFollowUpKeyword = previousFlow.followUpKeywords.some(keyword => 
-        input.includes(keyword.toLowerCase())
+    if (previousFlow && previousFlow.followUpTriggerPhrases && previousFlow.followUpMessages) {
+      // Check if user input matches any follow-up trigger phrases exactly
+      const hasFollowUpMatch = previousFlow.followUpTriggerPhrases.some(phrase => 
+        input === phrase.toLowerCase()
       );
       
-      if (hasFollowUpKeyword) {
+      if (hasFollowUpMatch) {
         // Process follow-up messages
         const processedMessages = previousFlow.followUpMessages.map(message => {
           if (message.type === "chip" && message.chipData.icon) {
@@ -110,26 +114,26 @@ export function getMockFlow(userInput, previousState = null) {
     }
   }
   
-  // Find the best matching flow
+  // Find the best matching flow using exact phrase matching
   let bestMatch = defaultMock;
-  let maxMatches = 0;
   
   for (const flow of mockFlows) {
-    if (flow.keywords.length === 0) continue; // Skip default mock in matching
+    if (!flow.triggerPhrases || flow.triggerPhrases.length === 0) continue; // Skip flows without trigger phrases
     
-    const matches = flow.keywords.filter(keyword => 
-      input.includes(keyword.toLowerCase())
-    ).length;
+    // Check if user input matches any trigger phrase exactly
+    const hasExactMatch = flow.triggerPhrases.some(phrase => 
+      input === phrase.toLowerCase()
+    );
     
-    if (matches > maxMatches) {
-      maxMatches = matches;
+    if (hasExactMatch) {
       bestMatch = flow;
+      break; // Use first exact match found
     }
   }
   
   // Update context based on selected flow
   const hasInteractiveMessage = bestMatch.messages.some(msg => msg.type === "interactive");
-  const hasFollowUpMessages = bestMatch.followUpKeywords && bestMatch.followUpMessages;
+  const hasFollowUpMessages = bestMatch.followUpTriggerPhrases && bestMatch.followUpMessages;
   
   if (hasInteractiveMessage) {
     conversationContext.waitingForChoice = true;
